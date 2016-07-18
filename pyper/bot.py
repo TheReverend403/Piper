@@ -12,7 +12,7 @@ class Bot:
         self.config = config
         self.telegram = telebot.TeleBot(config.get('bot', 'key'))
         telebot.logger.setLevel(logging.WARNING)
-        self.logger = logging.getLogger('Piper')
+        self.logger = logging.getLogger('Pyper')
         self.commands = {}
         self.__init_commands()
         self.telegram.set_update_listener(self.handle_messages)
