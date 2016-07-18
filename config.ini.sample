@@ -5,6 +5,7 @@ key = null
 disabled_commands = ["whatthecommit"]
 
 ## Command-specific configs
-## Example config for a command named /hello
-# [hello]
-# key = value
+
+# [google]
+# api_key = 
+# custom_search_id = 
