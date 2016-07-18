@@ -5,6 +5,10 @@ Pyper - A Python Telegram bot
 Python 3.4  
 [pyTelegramBotAPI](https://github.com/eternnoir/pyTelegramBotAPI) (requirements.txt)
 
+# Demo
+
+http://telegram.me/Pyper_Bot
+
 # Install
 First, acquire a bot token from https://telegram.me/BotFather
 
