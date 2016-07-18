@@ -43,12 +43,13 @@ class Bot:
                 command_split = message_text.split()
                 command_name = ''.join(command_split[:1])
                 args = command_split[1:]
-                if not args or len(args) == 0:
-                    args = None
+                if not args:
+                    args = []
                 for command in self.commands:
                     command = self.commands[command]
                     if command_name == command.name or hasattr(command, 'aliases') and command_name in command.aliases:
-                        self.logger.info('Command %s invoked by %s', command.name, message.from_user)
+                        self.logger.info('Command %s with args [%s] invoked by %s', command.name, ', '.join(args),
+                                         message.from_user)
                         command.run(message, args)
 
     def poll(self):
