@@ -1,0 +1,10 @@
+## Main bot config
+[bot]
+key = null
+# JSON list of disabled command names. Set to [] or delete this whole line to enable all commands.
+disabled_commands = ["whatthecommit"]
+
+## Command-specific configs
+## Example config for a command named /hello
+# [hello]
+# key = value
