@@ -15,6 +15,7 @@ class Bot:
         self.logger = logging.getLogger('Piper')
         self.commands = {}
         self.__init_commands()
+        self.telegram.set_update_listener(self.handle_messages)
 
     def __init_commands(self):
         self.logger.info('Loading commands.')
@@ -31,7 +32,6 @@ class Bot:
         self.logger.info('Enabled commands: [%s].', ', '.join(self.commands.keys()))
         if len(disabled_commands) > 0:
             self.logger.info('Disabled commands: [%s].', ', '.join(disabled_commands))
-        self.telegram.set_update_listener(self.handle_messages)
 
     def handle_messages(self, messages):
         for message in messages:
