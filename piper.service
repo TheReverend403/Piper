@@ -1,0 +1,14 @@
+[Unit]
+Description=A Python Telegram bot
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/path/to/Piper
+ExecStart=/path/to/Piper/.venv/bin/python -m piper.main
+## If not using virtualenv
+#ExecStart=/usr/bin/env python3 -m piper.main
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

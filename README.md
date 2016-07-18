@@ -28,3 +28,25 @@ source .venv/bin/activate
 pip install -r requirements.txt
 cat config.ini.sample # Check for any new values, add them to config.ini
 ```
+
+# systemd service
+To run Piper as a systemd user service:
+
+```sh
+cp piper.service ~/.config/systemd/user
+nano ~/.config/systemd/user/piper.service # Edit as needed
+systemctl --user daemon-reload
+systemctl --user enable piper
+systemctl --user start piper
+sudo loginctl enable-linger $USER # To allow user services to run on startup and stay after logout.
+```
+
+To run Piper as a systemd system service (not recommended):
+
+```sh
+sudo cp piper.service /etc/systemd/system
+sudo nano /etc/systemd/system/piper.service # Edit as needed
+sudo systemctl daemon-reload
+sudo systemctl enable piper
+sudo systemctl start piper
+```
