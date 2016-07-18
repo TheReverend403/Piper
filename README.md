@@ -10,6 +10,8 @@ Python 3.4
 First, acquire a bot token from https://telegram.me/BotFather
 
 ```sh
+git clone https://github.com/TheReverend403/Piper
+cd Piper
 virtualenv .venv -p python3
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -20,6 +22,7 @@ python -m piper.main
 
 # Upgrade
 ```sh
+cd Piper
 git pull
 source .venv/bin/activate
 pip install -r requirements.txt
