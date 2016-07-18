@@ -9,31 +9,29 @@ from lib.command import Command
 
 class Bot:
     def __init__(self, config):
-        self.config = config
+        self._config = config
         self.telegram = telebot.TeleBot(config.get('bot', 'key'))
         telebot.logger.setLevel(logging.WARNING)
         self.logger = logging.getLogger('Pyper')
         self.commands = {}
-        self.__init_commands()
-        self.telegram.set_update_listener(self.handle_messages)
+        self._init_commands()
+        self.telegram.set_update_listener(self._handle_messages)
 
-    def __init_commands(self):
+    def _init_commands(self):
         self.logger.info('Loading commands.')
         importdir.do('commands', globals())
-        disabled_commands = json.loads(self.config.get('bot', 'disabled_commands')) \
-            if self.config.has_option('bot', 'disabled_commands') else []
-        for cmd in Command.__subclasses__():
-            if cmd.name not in disabled_commands:
-                config = dict(self.config.items(cmd.name)) if self.config.has_section(cmd.name) else None
-                cmd = cmd(self, config)
-                self.commands[cmd.name] = cmd
+        disabled_commands = json.loads(self._config.get('bot', 'disabled_commands')) \
+            if self._config.has_option('bot', 'disabled_commands') else []
+        for command in Command.__subclasses__():
+            if command.name not in disabled_commands:
+                self._enable_command(command)
             else:
-                del cmd
+                del command
         self.logger.info('Enabled commands: [%s].', ', '.join(self.commands.keys()))
-        if len(disabled_commands) > 0:
+        if disabled_commands:
             self.logger.info('Disabled commands: [%s].', ', '.join(disabled_commands))
 
-    def handle_messages(self, messages):
+    def _handle_messages(self, messages):
         for message in messages:
             self.logger.debug(message)
             if message.text.startswith('/'):
@@ -61,3 +59,9 @@ class Bot:
             self.poll()
         except KeyboardInterrupt:
             self.telegram.stop_polling()
+
+    def _enable_command(self, command):
+        if command not in self.commands.values():
+            config = dict(self._config.items(command.name)) if self._config.has_section(command.name) else None
+            command = command(self, config)
+            self.commands[command.name] = command
