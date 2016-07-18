@@ -11,7 +11,7 @@ class HelpCommand(Command):
         for command in self.bot.commands.values():
             reply += '/{0} - {1}'.format(command.name, command.description)
             if hasattr(command, 'aliases'):
-                reply += ' (Aliases: /{0})'.format(', '.join(command.aliases))
+                reply += ' (Aliases: /{0})'.format(', /'.join(command.aliases))
             reply += '\n'
 
         reply += '\nYou can find my source code at https://github.com/TheReverend403/Piper'
