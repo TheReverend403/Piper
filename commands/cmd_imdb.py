@@ -13,7 +13,7 @@ class ImdbCommand(Command):
             self.reply(message, 'Please supply some search terms.')
             return
 
-        imdb = Imdb(cache=True)
+        imdb = Imdb(cache=True, exclude_episodes=True)
         self.bot.telegram.send_chat_action(message.chat.id, 'typing')
         results = imdb.search_for_title(' '.join(args))
         if not results:
