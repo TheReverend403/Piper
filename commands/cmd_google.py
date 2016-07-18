@@ -35,10 +35,10 @@ class GoogleCommand(Command):
 
         results = res['items']
         search_information = res['searchInformation']
-        reply = 'About {0} results ({1})\n'.format(search_information['formattedTotalResults'],
+        reply = 'About {0} results ({1} seconds)\n'.format(search_information['formattedTotalResults'],
                                                    search_information['formattedSearchTime'])
         for idx, result in enumerate(results):
             title = result['title']
             url = result['formattedUrl']
-            reply += '*{0}.* [{1}]({2} seconds)\n'.format(idx + 1, title, url)
+            reply += '*{0}.* [{1}]({2})\n'.format(idx + 1, title, url)
         self.reply(message, reply, parse_mode='Markdown', disable_web_page_preview=True)
