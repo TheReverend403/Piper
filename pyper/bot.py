@@ -1,6 +1,7 @@
 import json
 import logging
 
+import os
 import requests
 import telebot
 from lib import importdir
@@ -20,6 +21,11 @@ class Bot:
     def _init_commands(self):
         self.logger.info('Loading commands.')
         importdir.do('commands', globals())
+        if self._config.has_option('bot', 'extra_commands_dir'):
+            extra_commands_dir = self._config.get('bot', 'extra_commands_dir')
+            if extra_commands_dir and os.path.exists(extra_commands_dir):
+                self.logger.info('Added %s to command load path.', extra_commands_dir)
+                importdir.do(extra_commands_dir, globals())
 
         disabled_commands = []
         try:
