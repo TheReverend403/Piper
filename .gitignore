@@ -1,3 +1,4 @@
+.imdbpie_cache
 config.ini
 .venv
 *.pyc
