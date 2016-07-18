@@ -41,7 +41,7 @@ class Bot:
     def _handle_messages(self, messages):
         for message in messages:
             self.logger.debug(message)
-            if message.text.startswith('/'):
+            if message.text and message.text.startswith('/'):
                 message_text = message.text.strip('/')
                 if not message_text:
                     return
