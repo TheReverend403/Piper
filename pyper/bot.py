@@ -11,7 +11,7 @@ from lib.command import Command
 class Bot:
     def __init__(self, config):
         self._config = config
-        self.telegram = telebot.TeleBot(config.get('bot', 'key'))
+        self.telegram = telebot.TeleBot(config.get('bot', 'key'), skip_pending=True)
         telebot.logger.setLevel(logging.WARNING)
         self.logger = logging.getLogger('pyper')
         self.commands = {}
