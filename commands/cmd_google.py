@@ -40,5 +40,5 @@ class GoogleCommand(Command):
         for idx, result in enumerate(results):
             title = result['title']
             url = result['formattedUrl']
-            reply += '*{0}.* [{1}]({2})\n'.format(idx + 1, title, url)
+            reply += '*{0}.* [{1}]({2} seconds)\n'.format(idx + 1, title, url)
         self.reply(message, reply, parse_mode='Markdown', disable_web_page_preview=True)
