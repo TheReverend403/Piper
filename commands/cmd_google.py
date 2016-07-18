@@ -15,7 +15,7 @@ class GoogleCommand(Command):
             self.bot.logger.error('Google API keys are not configured.')
             return
 
-        if len(args) == 0:
+        if not args:
             self.reply(message, 'Please supply some search terms!')
             return
 

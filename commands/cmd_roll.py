@@ -7,7 +7,7 @@ class RollCommand(Command):
     description = 'Roll some dice.'
 
     def run(self, message, args):
-        if len(args) != 1:
+        if not args:
             self.reply(message, 'No roll specification supplied. Try */roll 3d6*.', parse_mode='Markdown')
             return
 
