@@ -7,6 +7,6 @@ class IdCommand(Command):
 
     def run(self, message, args):
         reply = 'Your Telegram ID is {0}'.format(message.from_user.id)
-        if '-c' or 'chat' in args:
+        if '-c' in args:
             reply = 'This chat\'s ID is {0}'.format(message.chat.id)
         self.reply(message, reply)

@@ -9,7 +9,7 @@ from piper.bot import Bot
 def main(args):
     logging.basicConfig(level=logging.INFO)
     logging.getLogger('requests').setLevel(logging.WARNING)
-    if '--verbose' or '-v' in args:
+    if '--verbose' in args:
         logging.basicConfig(level=logging.DEBUG)
 
     config = configparser.ConfigParser()
