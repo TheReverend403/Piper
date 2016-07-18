@@ -14,5 +14,5 @@ class HelpCommand(Command):
                 reply += ' (Aliases: /{0})'.format(', /'.join(command.aliases))
             reply += '\n'
 
-        reply += '\nYou can find my source code at https://github.com/TheReverend403/Piper'
+        reply += '\nYou can find my source code at https://github.com/TheReverend403/Pyper'
         self.reply(message, reply)

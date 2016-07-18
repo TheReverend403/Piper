@@ -3,7 +3,7 @@ import configparser
 import logging
 from sys import argv
 
-from piper.bot import Bot
+from pyper.bot import Bot
 
 
 def main(args):

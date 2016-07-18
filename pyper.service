@@ -4,10 +4,10 @@ After=network-online.target
 
 [Service]
 Type=simple
-WorkingDirectory=/path/to/Piper
-ExecStart=/path/to/Piper/.venv/bin/python -m piper.main
+WorkingDirectory=/path/to/Pyper
+ExecStart=/path/to/Pyper/.venv/bin/python -m pyper.main
 ## If not using virtualenv
-#ExecStart=/usr/bin/env python3 -m piper.main
+#ExecStart=/usr/bin/env python3 -m pyper.main
 Restart=on-failure
 
 [Install]
