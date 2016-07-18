@@ -11,7 +11,7 @@ def main(args):
     logging.getLogger('requests').setLevel(logging.WARNING)
     logging.getLogger('googleapiclient.discovery').setLevel(logging.WARNING)
     if '--verbose' in args:
-        logging.basicConfig(level=logging.DEBUG)
+        logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] %(name)s: %(message)s')
 
     config = configparser.ConfigParser()
     config.read('config.ini')
