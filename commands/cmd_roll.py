@@ -4,7 +4,7 @@ from lib.command import Command
 
 class RollCommand(Command):
     name = 'roll'
-    description = 'Replies with whatever input you send.'
+    description = 'Roll some dice.'
 
     def run(self, message, args):
         if len(args) != 1:
