@@ -1,6 +1,7 @@
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from lib.command import Command
+from lib.utils import escape_telegram_html
 
 
 class GoogleCommand(Command):
@@ -36,9 +37,10 @@ class GoogleCommand(Command):
         results = res['items']
         search_information = res['searchInformation']
         reply = 'About {0} results ({1} seconds)\n'.format(search_information['formattedTotalResults'],
-                                                   search_information['formattedSearchTime'])
+                                                           search_information['formattedSearchTime'])
         for idx, result in enumerate(results):
             title = result['title']
             url = result['formattedUrl']
-            reply += '*{0}.* [{1}]({2})\n'.format(idx + 1, title, url)
-        self.reply(message, reply, parse_mode='Markdown', disable_web_page_preview=True)
+            reply += '<b>{0}.</b> <a href="{2}">{1}</a>\n'.format(idx + 1, escape_telegram_html(title),
+                                                                  escape_telegram_html(url))
+        self.reply(message, reply, parse_mode='HTML', disable_web_page_preview=True)
