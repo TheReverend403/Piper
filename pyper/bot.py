@@ -12,7 +12,7 @@ class Bot:
         self._config = config
         self.telegram = telebot.TeleBot(config.get('bot', 'key'))
         telebot.logger.setLevel(logging.WARNING)
-        self.logger = logging.getLogger('Pyper')
+        self.logger = logging.getLogger('pyper')
         self.commands = {}
         self._init_commands()
         self.telegram.set_update_listener(self._handle_messages)
@@ -20,13 +20,20 @@ class Bot:
     def _init_commands(self):
         self.logger.info('Loading commands.')
         importdir.do('commands', globals())
-        disabled_commands = json.loads(self._config.get('bot', 'disabled_commands')) \
-            if self._config.has_option('bot', 'disabled_commands') else []
+
+        disabled_commands = []
+        try:
+            if self._config.has_option('bot', 'disabled_commands'):
+                disabled_commands = json.loads(self._config.get('bot', 'disabled_commands'))
+        except ValueError as ex:
+            self.logger.exception(ex)
+
         for command in Command.__subclasses__():
             if command.name not in disabled_commands:
                 self._enable_command(command)
             else:
                 del command
+
         self.logger.info('Enabled commands: [%s].', ', '.join(self.commands.keys()))
         if disabled_commands:
             self.logger.info('Disabled commands: [%s].', ', '.join(disabled_commands))
@@ -38,11 +45,11 @@ class Bot:
                 message_text = message.text.strip('/')
                 if not message_text:
                     return
+
                 command_split = message_text.split()
                 command_name = ''.join(command_split[:1])
                 args = command_split[1:]
-                if not args:
-                    args = []
+
                 for command in self.commands:
                     command = self.commands[command]
                     if command_name == command.name or hasattr(command, 'aliases') and command_name in command.aliases:

@@ -12,7 +12,7 @@ class GoogleCommand(Command):
     def run(self, message, args):
         if not self.config:
             self.reply(message, 'Google command is not configured!')
-            self.bot.logger.error('Google API keys are not configured.')
+            self.logger.error('Google API keys are not configured.')
             return
 
         if not args:
@@ -24,7 +24,7 @@ class GoogleCommand(Command):
             res = service.cse().list(q=' '.join(args), cx=self.config['custom_search_id'], num=5).execute()
         except HttpError as ex:
             self.reply(message, 'Error occurred while fetching search results!')
-            self.bot.logger.exception(ex)
+            self.logger.exception(ex)
             return
 
         if 'items' not in res:

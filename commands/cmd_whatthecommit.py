@@ -7,7 +7,7 @@ import requests
 class WhatTheCommitCommand(Command):
     name = 'whatthecommit'
     aliases = ['wtc']
-    description = 'Gets a random commit message from http://whatthecommit.com'
+    description = 'Gets a random commit message from whatthecommit.com'
 
     def run(self, message, args):
         request = None
@@ -15,7 +15,7 @@ class WhatTheCommitCommand(Command):
             request = requests.get('http://whatthecommit.com')
         except requests.exceptions.RequestException as ex:
             self.reply(message, 'Error: {0}'.format(ex.strerror), disable_web_page_preview=True)
-            self.bot.logger.error(ex)
+            self.logger.exception(ex)
             return
         finally:
             if request is not None:

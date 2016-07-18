@@ -7,7 +7,7 @@ from pyper.bot import Bot
 
 
 def main(args):
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(name)s: %(message)s')
     logging.getLogger('requests').setLevel(logging.WARNING)
     logging.getLogger('googleapiclient.discovery').setLevel(logging.WARNING)
     if '--verbose' in args:
