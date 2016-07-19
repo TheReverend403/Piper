@@ -50,10 +50,6 @@ class LastFMCommand(Command):
             return
 
         user = network.get_user(username)
-        if not user:
-            self.reply(message, '{0} doesn\'t appear to have a last.fm account!'.format(username))
-            return
-
         current_track = user.get_now_playing()
         if not current_track:
             reply = '<a href="http://www.last.fm/user/{0}">{0}</a> is not listening to anything right now.'.format(
