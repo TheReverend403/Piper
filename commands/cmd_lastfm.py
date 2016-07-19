@@ -2,9 +2,8 @@ import pylast
 from lib.command import Command
 from lib.utils import escape_telegram_html
 
-ADD_STRINGS = [
-    "-a", "-add", "--add",
-    "-s", "-set", "--set"
+SET_STRINGS = [
+    '-s', '-set', '--set', 'set'
 ]
 
 
@@ -26,7 +25,7 @@ class LastFMCommand(Command):
 
         network = pylast.LastFMNetwork(api_key=self.config['api_key'])
         user = message.from_user
-        if args and args[0] in ADD_STRINGS:
+        if args and args[0] in SET_STRINGS:
             if len(args) == 1:
                 self.reply(message, 'Please provide a username. (/np -s <username>)')
                 return
