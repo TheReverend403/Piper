@@ -11,7 +11,7 @@ ADD_STRINGS = [
 class LastFMCommand(Command):
     name = 'lastfm'
     aliases = ['np', 'nowplaying']
-    description = 'Post your currently playing song (Telegram username must be the same as last.fm username).'
+    description = 'Post your currently playing song.'
     has_database = True
 
     def run(self, message, args):
