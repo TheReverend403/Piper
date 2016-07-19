@@ -11,3 +11,6 @@ extra_commands_dir =
 # [google]
 # api_key = 
 # custom_search_id = 
+
+# [lastfm]
+# api_key =
