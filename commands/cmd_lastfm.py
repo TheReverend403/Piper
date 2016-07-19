@@ -25,7 +25,6 @@ class LastFMCommand(Command):
             return
 
         network = pylast.LastFMNetwork(api_key=self.config['api_key'])
-
         user = message.from_user
         if args and args[0] in ADD_STRINGS:
             if len(args) == 1:

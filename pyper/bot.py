@@ -65,7 +65,7 @@ class Bot:
 
     def poll(self):
         try:
-            self.telegram.polling(timeout=10)
+            self.telegram.polling(timeout=3)
         except requests.exceptions.ConnectionError as ex:
             self.logger.exception(ex)
             self.telegram.stop_polling()
