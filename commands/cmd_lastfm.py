@@ -56,7 +56,9 @@ class LastFMCommand(Command):
 
         current_track = user.get_now_playing()
         if not current_track:
-            self.reply(message, '{0} is not listening to anything right now.'.format(username))
+            reply = '<a href="http://www.last.fm/user/{0}">{0}</a> is not listening to anything right now.'.format(
+                escape_telegram_html(username))
+            self.reply(message, reply, parse_mode='HTML')
             return
 
         trackinfo = '<a href="{0}">{1} - {2}</a>'.format(
