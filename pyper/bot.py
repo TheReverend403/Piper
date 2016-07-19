@@ -58,7 +58,7 @@ class Bot:
 
                 for command in self.commands:
                     command = self.commands[command]
-                    if command_name == command.name or hasattr(command, 'aliases') and command_name in command.aliases:
+                    if command_name == command.name or command_name in command.aliases:
                         self.logger.info('Command %s with args [%s] invoked by %s', command.name, ', '.join(args),
                                          message.from_user)
                         command.run(message, args)
