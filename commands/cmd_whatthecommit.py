@@ -14,7 +14,7 @@ class WhatTheCommitCommand(Command):
         try:
             request = requests.get('http://whatthecommit.com')
         except requests.exceptions.RequestException as ex:
-            self.reply(message, 'Error: {0}'.format(ex.strerror), disable_web_page_preview=True)
+            self.reply(message, 'Error: {0}'.format(ex.strerror))
             self.logger.exception(ex)
             return
         finally:
@@ -23,4 +23,4 @@ class WhatTheCommitCommand(Command):
         html = request.text
         parsed_html = BeautifulSoup(html, 'html.parser')
         commit_message = parsed_html.body.find('div', id='content').find('p').text
-        self.reply(message, commit_message, disable_web_page_preview=True)
+        self.reply(message, commit_message)

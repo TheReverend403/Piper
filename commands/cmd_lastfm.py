@@ -15,13 +15,12 @@ class LastFMCommand(Command):
 
     def run(self, message, args):
         if not self.config:
-            self.reply(message, 'last.fm command is not configured!', disable_web_page_preview=True)
+            self.reply(message, 'last.fm command is not configured!')
             self.logger.error('last.fm API key is not configured.')
             return
 
         if not message.from_user.username:
-            self.reply(message, 'You do not have a Telegram username I can use with last.fm!',
-                       disable_web_page_preview=True)
+            self.reply(message, 'You do not have a Telegram username I can use with last.fm!')
             return
 
         network = pylast.LastFMNetwork(api_key=self.config['api_key'])
@@ -40,22 +39,19 @@ class LastFMCommand(Command):
                 pass
             if user_exists:
                 self.bot.database.set_user_value(user, 'lastfm_username', username)
-                self.reply(message, 'last.fm username set.', disable_web_page_preview=True)
+                self.reply(message, 'last.fm username set.')
             else:
-                self.reply(message, 'No such last.fm user. Are you trying to trick me? :^)',
-                           disable_web_page_preview=True)
+                self.reply(message, 'No such last.fm user. Are you trying to trick me? :^)')
             return
 
         username = self.bot.database.get_user_value(user, 'lastfm_username')
         if not username:
-            self.reply(message, 'You have no last.fm username set. Please set one with /np -s <username>',
-                       disable_web_page_preview=True)
+            self.reply(message, 'You have no last.fm username set. Please set one with /np -s <username>')
             return
 
         user = network.get_user(username)
         if not user:
-            self.reply(message, '{0} doesn\'t appear to have a last.fm account!'.format(username),
-                       disable_web_page_preview=True)
+            self.reply(message, '{0} doesn\'t appear to have a last.fm account!'.format(username))
             return
 
         current_track = user.get_now_playing()
@@ -68,5 +64,4 @@ class LastFMCommand(Command):
             escape_telegram_html(current_track.get_artist().get_name()),
             escape_telegram_html(current_track.get_title()))
 
-        self.reply(message, '{0} is now listening to {1}'.format(username, trackinfo),
-                   parse_mode='HTML', disable_web_page_preview=True)
+        self.reply(message, '{0} is now listening to {1}'.format(username, trackinfo), parse_mode='HTML')

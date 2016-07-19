@@ -35,4 +35,4 @@ class ImdbCommand(Command):
             escape_telegram_html(', '.join([person.name for person in result.directors_summary[:5]])))
         reply += escape_telegram_html(result.plots[0])
 
-        self.reply(message, reply, parse_mode='HTML', disable_web_page_preview=True)
+        self.reply(message, reply, parse_mode='HTML')

@@ -29,9 +29,9 @@ class GoogleCommand(Command):
 
         if 'items' not in res:
             if 'error' in res:
-                self.reply(message, res['error']['message'], disable_web_page_preview=True)
+                self.reply(message, res['error']['message'])
                 return
-            self.reply(message, 'No results found!', disable_web_page_preview=True)
+            self.reply(message, 'No results found!')
             return
 
         results = res['items']
@@ -43,4 +43,4 @@ class GoogleCommand(Command):
             url = result['formattedUrl']
             reply += '<b>{0}.</b> <a href="{2}">{1}</a>\n'.format(idx + 1, escape_telegram_html(title),
                                                                   escape_telegram_html(url))
-        self.reply(message, reply, parse_mode='HTML', disable_web_page_preview=True)
+        self.reply(message, reply, parse_mode='HTML')

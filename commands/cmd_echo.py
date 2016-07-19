@@ -7,6 +7,6 @@ class EchoCommand(Command):
 
     def run(self, message, args):
         if args:
-            self.reply(message, args, disable_web_page_preview=True)
+            self.reply(message, args)
         else:
             self.reply(message, 'Please supply some args!')
