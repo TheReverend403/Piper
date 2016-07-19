@@ -53,7 +53,7 @@ class Bot:
                     return
 
                 command_split = message_text.split()
-                command_name = ''.join(command_split[:1]).lower()
+                command_name = ''.join(command_split[:1]).lower().replace('@' + self.telegram.get_me().username, '')
                 args = command_split[1:]
 
                 for command in self.commands:
