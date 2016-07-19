@@ -53,7 +53,7 @@ class Bot:
                     return
 
                 command_split = message_text.split()
-                command_name = ''.join(command_split[:1])
+                command_name = ''.join(command_split[:1]).lower()
                 args = command_split[1:]
 
                 for command in self.commands:
