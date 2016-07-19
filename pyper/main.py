@@ -2,6 +2,7 @@
 import configparser
 import logging
 from sys import argv
+import os
 
 from pyper.bot import Bot
 
@@ -15,6 +16,10 @@ def main(args):
 
     config = configparser.ConfigParser()
     config.read('config.ini')
+
+    if not os.path.exists('data'):
+        os.mkdir('data')
+
     bot = Bot(config)
     bot.poll()
 
