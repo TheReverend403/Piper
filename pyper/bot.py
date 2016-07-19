@@ -54,7 +54,7 @@ class Bot:
 
                 command_split = message_text.split()
                 command_name, _, _ = ''.join(command_split[:1]).lower().partition('@')
-                args = command_split[1:]
+                args = list(filter(bool, command_split[1:]))
 
                 for command in self.commands:
                     command = self.commands[command]

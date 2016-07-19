@@ -10,7 +10,7 @@ class HelpCommand(Command):
         reply = 'Hi! I\'m {0} and these are my commands: \n\n'.format(self.bot.telegram.get_me().username)
         for command in self.bot.commands.values():
             reply += '/{0} - {1}'.format(command.name, command.description)
-            if hasattr(command, 'aliases'):
+            if command.aliases:
                 reply += ' (Aliases: /{0})'.format(', /'.join(command.aliases))
             reply += '\n'
 
