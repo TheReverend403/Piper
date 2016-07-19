@@ -64,4 +64,5 @@ class LastFMCommand(Command):
             escape_telegram_html(current_track.get_artist().get_name()),
             escape_telegram_html(current_track.get_title()))
 
-        self.reply(message, '{0} is now listening to {1}'.format(username, trackinfo), parse_mode='HTML')
+        self.reply(message, '<a href="http://www.last.fm/user/{0}">{0}</a> is now listening to {1}'.format(
+            escape_telegram_html(username), trackinfo), parse_mode='HTML')
