@@ -6,7 +6,6 @@ import requests
 import telebot
 from lib import importdir
 from lib.command import Command
-from lib.database import Database
 
 
 class Bot:
@@ -15,7 +14,6 @@ class Bot:
         self.telegram = telebot.TeleBot(config.get('bot', 'key'), skip_pending=True)
         telebot.logger.setLevel(logging.WARNING)
         self.logger = logging.getLogger('pyper')
-        self.database = Database('data/pyper.db')
         self.commands = {}
         self._init_commands()
         self.telegram.set_update_listener(self._handle_messages)

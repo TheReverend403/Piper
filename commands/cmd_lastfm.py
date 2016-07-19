@@ -12,6 +12,7 @@ class LastFMCommand(Command):
     name = 'lastfm'
     aliases = ['np', 'nowplaying']
     description = 'Post your currently playing song (Telegram username must be the same as last.fm username).'
+    has_database = True
 
     def run(self, message, args):
         if not self.config:
@@ -38,13 +39,13 @@ class LastFMCommand(Command):
             except pylast.WSError:
                 pass
             if user_exists:
-                self.bot.database.set_user_value(user, 'lastfm_username', username)
+                self.database.set_user_value(user, 'username', username)
                 self.reply(message, 'last.fm username set.')
             else:
                 self.reply(message, 'No such last.fm user. Are you trying to trick me? :^)')
             return
 
-        username = self.bot.database.get_user_value(user, 'lastfm_username')
+        username = self.database.get_user_value(user, 'username')
         if not username:
             self.reply(message, 'You have no last.fm username set. Please set one with /np -s <username>')
             return
