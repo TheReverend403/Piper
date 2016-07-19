@@ -10,7 +10,7 @@ class ImdbCommand(Command):
 
     def run(self, message, args):
         if not args:
-            self.reply(message, 'Please supply some search terms.')
+            self.reply(message, 'Please supply some search terms!')
             return
 
         imdb = Imdb(cache=True, exclude_episodes=True)
