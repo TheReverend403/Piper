@@ -1,6 +1,6 @@
 import pylast
 from lib.command import Command
-from lib.utils import telegram_escape
+from lib.utils import telegram_escape, emojify
 
 SET_STRINGS = [
     '-s', '-set', '--set', 'set'
@@ -67,7 +67,15 @@ class LastFMCommand(Command):
             telegram_escape(current_track.get_title()))
 
         if current_track.get_userloved():
-            trackinfo += ' [:heart:]️️'
+            trackinfo += emojify(' [:heart:]️️)')
 
-        self.reply(message, '<a href="http://www.last.fm/user/{0}">{1}</a> is now listening to {2}'.format(
-            telegram_escape(username), telegram_escape(user.first_name), trackinfo), parse_mode='HTML', emojify=True)
+        reply = '<a href="http://www.last.fm/user/{0}">{1}</a> is now listening to {2}'.format(
+            telegram_escape(username), telegram_escape(user.first_name), trackinfo)
+
+        currently_listening = current_track.get_listener_count()
+        if currently_listening is not 0:
+            reply += ', and so {0} {1} other {2}.'.format(
+                'is' if currently_listening is 1 else 'are', currently_listening,
+                'users' if currently_listening > 1 else 'user')
+
+        self.reply(message, reply, parse_mode='HTML')
