@@ -1,6 +1,6 @@
 import pylast
 from lib.command import Command
-from lib.utils import escape_telegram_html
+from lib.utils import telegram_escape
 
 SET_STRINGS = [
     '-s', '-set', '--set', 'set'
@@ -39,29 +39,31 @@ class LastFMCommand(Command):
                 return
             username = args[1].strip()
             try:
-                self.__network.get_user(username).get_id()
-                self.database.set_user_value(user, 'lastfm', username)
+                self.database.set_user_value(user, 'lastfm',
+                                             self.__network.get_user(username).get_name(properly_capitalized=True))
                 self.reply(message, 'last.fm username set.')
+                return
             except pylast.WSError:
                 self.reply(message, 'No such last.fm user. Are you trying to trick me? :^)')
+                return
 
         username = self.database.get_user_value(user, 'lastfm')
         if not username:
             self.reply(message, 'You have no last.fm username set. Please set one with /np -s <username>')
             return
 
-        user = self.__network.get_user(username)
-        current_track = user.get_now_playing()
+        lastfm_user = self.__network.get_user(username)
+        current_track = lastfm_user.get_now_playing()
         if not current_track:
             reply = '<a href="http://www.last.fm/user/{0}">{0}</a> is not listening to anything right now.'.format(
-                escape_telegram_html(username))
+                telegram_escape(username))
             self.reply(message, reply, parse_mode='HTML')
             return
 
         trackinfo = '<a href="{0}">{1} - {2}</a>'.format(
-            escape_telegram_html(current_track.get_url()),
-            escape_telegram_html(current_track.get_artist().get_name()),
-            escape_telegram_html(current_track.get_title()))
+            telegram_escape(current_track.get_url()),
+            telegram_escape(current_track.get_artist().get_name()),
+            telegram_escape(current_track.get_title()))
 
-        self.reply(message, '<a href="http://www.last.fm/user/{0}">{0}</a> is now listening to {1}'.format(
-            escape_telegram_html(username), trackinfo), parse_mode='HTML')
+        self.reply(message, '<a href="http://www.last.fm/user/{0}">{1}</a> is now listening to {2}'.format(
+            telegram_escape(username), telegram_escape(user.first_name), trackinfo), parse_mode='HTML')

@@ -1,7 +1,7 @@
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from lib.command import Command
-from lib.utils import escape_telegram_html
+from lib.utils import telegram_escape
 
 
 class GoogleCommand(Command):
@@ -54,7 +54,7 @@ class GoogleCommand(Command):
             title = result['title']
             url = result['formattedUrl']
             display_url = result['displayLink']
-            reply += '<b>{0}.</b> <a href="{2}">{1}</a> <pre>{3}</pre>\n'.format(idx + 1, escape_telegram_html(title),
-                                                                                 escape_telegram_html(url),
-                                                                                 escape_telegram_html(display_url))
+            reply += '<b>{0}.</b> <a href="{2}">{1}</a> <pre>{3}</pre>\n'.format(idx + 1, telegram_escape(title),
+                                                                                 telegram_escape(url),
+                                                                                 telegram_escape(display_url))
         self.reply(message, reply, parse_mode='HTML')

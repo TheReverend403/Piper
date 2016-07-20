@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from lib.command import Command
-from lib.utils import escape_telegram_html
+from lib.utils import telegram_escape
 
 
 class WhatTheCommitCommand(Command):
@@ -24,5 +24,5 @@ class WhatTheCommitCommand(Command):
         html = response.text
         parsed_html = BeautifulSoup(html, 'html.parser')
         commit_message = parsed_html.body.find('div', id='content').find('p').text
-        reply = '<pre>git commit -am "{0}"</pre>'.format(escape_telegram_html(commit_message.strip()))
+        reply = '<pre>git commit -am "{0}"</pre>'.format(telegram_escape(commit_message.strip()))
         self.reply(message, reply, parse_mode='HTML')

@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from lib.command import Command
-from lib.utils import escape_telegram_html
+from lib.utils import telegram_escape
 
 
 class InsultCommand(Command):
@@ -24,5 +24,5 @@ class InsultCommand(Command):
         html = response.text
         parsed_html = BeautifulSoup(html, 'html.parser')
         insult_html = parsed_html.body.find('div', {'class': 'wrap'})
-        insult = escape_telegram_html(insult_html.text.strip())
+        insult = telegram_escape(insult_html.text.strip())
         self.reply(message, insult, parse_mode='HTML')

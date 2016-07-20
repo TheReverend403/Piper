@@ -3,7 +3,7 @@ import json
 import re
 import requests
 from lib.command import Command
-from lib.utils import escape_telegram_html
+from lib.utils import telegram_escape
 
 
 class KernelCommand(Command):
@@ -36,10 +36,10 @@ class KernelCommand(Command):
                     continue
             versions.append(
                 '<b>{0}</b> ({1}|<a href="{2}">changelog</a>|<a href="{3}">source</a>)'.format(
-                    escape_telegram_html(branch['version']),
-                    escape_telegram_html(branch['moniker']),
-                    escape_telegram_html(branch['changelog'] if branch['changelog'] else branch['gitweb']),
-                    escape_telegram_html(branch['source'] if branch['source'] else branch['gitweb'])))
+                    telegram_escape(branch['version']),
+                    telegram_escape(branch['moniker']),
+                    telegram_escape(branch['changelog'] if branch['changelog'] else branch['gitweb']),
+                    telegram_escape(branch['source'] if branch['source'] else branch['gitweb'])))
 
         if not versions and args:
             self.reply(message, 'No kernel versions found for {0}!'.format(args[0]))

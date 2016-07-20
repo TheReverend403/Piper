@@ -1,6 +1,6 @@
 from imdbpie import Imdb
 from lib.command import Command
-from lib.utils import escape_telegram_html
+from lib.utils import telegram_escape
 
 
 class ImdbCommand(Command):
@@ -21,18 +21,18 @@ class ImdbCommand(Command):
             return
 
         result = imdb.get_title_by_id(results[0]['imdb_id'])
-        reply = '<b>URL:</b> http://www.imdb.com/title/{0}\n'.format(escape_telegram_html(result.imdb_id))
-        reply += '<b>Title:</b> {0}\n'.format(escape_telegram_html(result.title))
+        reply = '<b>URL:</b> http://www.imdb.com/title/{0}\n'.format(telegram_escape(result.imdb_id))
+        reply += '<b>Title:</b> {0}\n'.format(telegram_escape(result.title))
         reply += '<b>Year:</b> {0}\n'.format(result.year)
-        reply += '<b>Genre:</b> {0}\n'.format(escape_telegram_html(', '.join(result.genres[:3])))
+        reply += '<b>Genre:</b> {0}\n'.format(telegram_escape(', '.join(result.genres[:3])))
         reply += '<b>Rating:</b> {0}\n'.format(result.rating)
         runtime, _ = divmod(result.runtime, 60)
         reply += '<b>Runtime:</b> {0} minutes\n'.format(runtime)
         reply += '<b>Certification:</b> {0}\n'.format(result.certification)
         reply += '<b>Cast:</b> {0}\n'.format(
-            escape_telegram_html(', '.join([person.name for person in result.cast_summary[:5]])))
+            telegram_escape(', '.join([person.name for person in result.cast_summary[:5]])))
         reply += '<b>Director(s):</b> {0}\n\n'.format(
-            escape_telegram_html(', '.join([person.name for person in result.directors_summary[:5]])))
-        reply += escape_telegram_html(result.plots[0])
+            telegram_escape(', '.join([person.name for person in result.directors_summary[:5]])))
+        reply += telegram_escape(result.plots[0])
 
         self.reply(message, reply, parse_mode='HTML')
