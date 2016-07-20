@@ -60,9 +60,10 @@ class LastFMCommand(Command):
             self.reply(message, reply, parse_mode='HTML')
             return
 
-        trackinfo = '<a href="{0}">{1} - {2}</a>'.format(
-            telegram_escape(current_track.get_url()),
+        trackinfo = '<a href="{0}">{1}</a> - <a href="{2}">{3}</a>'.format(
+            telegram_escape(current_track.get_artist().get_url()),
             telegram_escape(current_track.get_artist().get_name()),
+            telegram_escape(current_track.get_url()),
             telegram_escape(current_track.get_title()))
 
         if current_track.get_userloved():
