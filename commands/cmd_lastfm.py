@@ -73,7 +73,7 @@ class LastFMCommand(Command):
             telegram_escape(username), telegram_escape(user.first_name), trackinfo)
 
         currently_listening = current_track.get_listener_count()
-        if currently_listening is not 0:
+        if currently_listening:
             reply += ', and so {0} {1} other {2}.'.format(
                 'is' if currently_listening is 1 else 'are', currently_listening,
                 'user' if currently_listening is 1 else 'users')
