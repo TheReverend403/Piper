@@ -11,17 +11,18 @@ class WhatTheCommitCommand(Command):
     description = 'Gets a random commit message from whatthecommit.com'
 
     def run(self, message, args):
-        request = None
+        response = None
         try:
-            request = requests.get('http://whatthecommit.com')
+            response = requests.get('http://whatthecommit.com')
         except requests.exceptions.RequestException as ex:
             self.reply(message, 'Error: {0}'.format(ex.strerror))
             self.logger.exception(ex)
             return
         finally:
-            if request is not None:
-                request.close()
-        html = request.text
+            if response is not None:
+                response.close()
+
+        html = response.text
         parsed_html = BeautifulSoup(html, 'html.parser')
         commit_message = parsed_html.body.find('div', id='content').find('p').text
         reply = '<pre>git commit -am "{0}"</pre>'.format(escape_telegram_html(commit_message.strip()))
