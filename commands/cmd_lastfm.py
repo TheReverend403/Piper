@@ -13,13 +13,20 @@ class LastFMCommand(Command):
     description = 'Post your currently playing song.'
     has_database = True
 
+    def __init__(self, bot, config):
+        super().__init__(bot, config)
+        if not self.config or 'api_key' not in self.config:
+            self.logger.error('last.fm API key is not configured.')
+            self.config = None
+            return
+        else:
+            self.__network = pylast.LastFMNetwork(api_key=self.config['api_key'])
+
     def run(self, message, args):
         if not self.config:
             self.reply(message, 'last.fm command is not configured!')
-            self.logger.error('last.fm API key is not configured.')
             return
 
-        network = pylast.LastFMNetwork(api_key=self.config['api_key'])
         user = message.from_user
         if args and args[0] in SET_STRINGS:
             if len(args) == 1:
@@ -28,7 +35,7 @@ class LastFMCommand(Command):
             username = args[1].strip()
             user_exists = False
             try:
-                network.get_user(username).get_id()
+                self.__network.get_user(username).get_id()
                 user_exists = True
             except pylast.WSError:
                 pass
@@ -44,7 +51,7 @@ class LastFMCommand(Command):
             self.reply(message, 'You have no last.fm username set. Please set one with /np -s <username>')
             return
 
-        user = network.get_user(username)
+        user = self.__network.get_user(username)
         current_track = user.get_now_playing()
         if not current_track:
             reply = '<a href="http://www.last.fm/user/{0}">{0}</a> is not listening to anything right now.'.format(

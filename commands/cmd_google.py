@@ -9,19 +9,26 @@ class GoogleCommand(Command):
     aliases = ['g', 'search']
     description = 'Searches Google for a set of search terms.'
 
+    def __init__(self, bot, config):
+        super().__init__(bot, config)
+        if not self.config or 'api_key' not in self.config or 'custom_search_id' not in self.config:
+            self.logger.error('Google API keys are not configured.')
+            self.config = None
+            return
+        else:
+            self.__service = build('customsearch', 'v1', developerKey=self.config['api_key'])
+
     def run(self, message, args):
         if not self.config:
             self.reply(message, 'Google command is not configured!')
-            self.logger.error('Google API keys are not configured.')
             return
 
         if not args:
             self.reply(message, 'Please supply some search terms!')
             return
 
-        service = build('customsearch', 'v1', developerKey=self.config['api_key'])
         try:
-            res = service.cse().list(q=' '.join(args), cx=self.config['custom_search_id'], num=5).execute()
+            res = self.__service.cse().list(q=' '.join(args), cx=self.config['custom_search_id'], num=5).execute()
         except HttpError as ex:
             self.reply(message, 'Error occurred while fetching search results!')
             self.logger.exception(ex)
