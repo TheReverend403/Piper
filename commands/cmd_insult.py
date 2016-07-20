@@ -1,8 +1,7 @@
+import requests
+from bs4 import BeautifulSoup
 from lib.command import Command
 from lib.utils import escape_telegram_html
-
-from bs4 import BeautifulSoup
-import requests
 
 
 class InsultCommand(Command):

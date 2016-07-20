@@ -1,5 +1,5 @@
-from lib.command import Command
 import random
+from lib.command import Command
 
 
 class EchoCommand(Command):
