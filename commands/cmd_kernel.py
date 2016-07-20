@@ -41,5 +41,9 @@ class KernelCommand(Command):
                     escape_telegram_html(branch['changelog'] if branch['changelog'] else branch['gitweb']),
                     escape_telegram_html(branch['source'] if branch['source'] else branch['gitweb'])))
 
+        if not versions and args:
+            self.reply(message, 'No kernel versions found for {0}!'.format(args[0]))
+            return
+
         reply = '\n'.join(versions)
         self.reply(message, reply, parse_mode='HTML')
