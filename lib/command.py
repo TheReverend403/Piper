@@ -1,7 +1,7 @@
 import logging
 
 from lib.database import Database
-from pyemojify import emojify
+import emoji
 
 
 class Command(object):
@@ -18,7 +18,7 @@ class Command(object):
             kwargs['disable_web_page_preview'] = True
 
         if 'emojify' in kwargs and kwargs['emojify']:
-            reply = emojify(reply)
+            reply = emoji.emojize(reply, use_aliases=True)
             del kwargs['emojify']
 
         self.bot.telegram.reply_to(message, reply, **kwargs)
