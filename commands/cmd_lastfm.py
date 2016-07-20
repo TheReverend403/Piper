@@ -38,18 +38,12 @@ class LastFMCommand(Command):
                 self.reply(message, 'Please provide a username. (/np -s <username>)')
                 return
             username = args[1].strip()
-            user_exists = False
             try:
                 self.__network.get_user(username).get_id()
-                user_exists = True
-            except pylast.WSError:
-                pass
-            if user_exists:
                 self.database.set_user_value(user, 'lastfm', username)
                 self.reply(message, 'last.fm username set.')
-            else:
+            except pylast.WSError:
                 self.reply(message, 'No such last.fm user. Are you trying to trick me? :^)')
-            return
 
         username = self.database.get_user_value(user, 'lastfm')
         if not username:
