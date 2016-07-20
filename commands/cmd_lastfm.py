@@ -67,7 +67,7 @@ class LastFMCommand(Command):
             telegram_escape(current_track.get_title()))
 
         if current_track.get_userloved():
-            trackinfo += emojify(' [:heart:]️️)')
+            trackinfo += emojify(' [:heart:]️️')
 
         reply = '<a href="http://www.last.fm/user/{0}">{1}</a> is now listening to {2}'.format(
             telegram_escape(username), telegram_escape(user.first_name), trackinfo)
