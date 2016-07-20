@@ -19,10 +19,6 @@ class LastFMCommand(Command):
             self.logger.error('last.fm API key is not configured.')
             return
 
-        if not message.from_user.username:
-            self.reply(message, 'You do not have a Telegram username I can use with last.fm!')
-            return
-
         network = pylast.LastFMNetwork(api_key=self.config['api_key'])
         user = message.from_user
         if args and args[0] in SET_STRINGS:
