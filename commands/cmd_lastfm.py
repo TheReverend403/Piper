@@ -37,13 +37,13 @@ class LastFMCommand(Command):
             except pylast.WSError:
                 pass
             if user_exists:
-                self.database.set_user_value(user, 'username', username)
+                self.database.set_user_value(user, 'lastfm', username)
                 self.reply(message, 'last.fm username set.')
             else:
                 self.reply(message, 'No such last.fm user. Are you trying to trick me? :^)')
             return
 
-        username = self.database.get_user_value(user, 'username')
+        username = self.database.get_user_value(user, 'lastfm')
         if not username:
             self.reply(message, 'You have no last.fm username set. Please set one with /np -s <username>')
             return
@@ -61,5 +61,5 @@ class LastFMCommand(Command):
             escape_telegram_html(current_track.get_artist().get_name()),
             escape_telegram_html(current_track.get_title()))
 
-        self.reply(message, '<a href="http://www.last.fm/user/{0}">{0}</a> is now listening to {1}.'.format(
+        self.reply(message, '<a href="http://www.last.fm/user/{0}">{0}</a> is now listening to {1}'.format(
             escape_telegram_html(username), trackinfo), parse_mode='HTML')
