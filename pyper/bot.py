@@ -8,7 +8,7 @@ from lib import importdir
 from lib.command import Command
 
 
-class Bot:
+class Bot(object):
     def __init__(self, config):
         self._config = config
         self.telegram = telebot.TeleBot(config.get('bot', 'key'), skip_pending=True)
