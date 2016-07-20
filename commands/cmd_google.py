@@ -16,7 +16,12 @@ class GoogleCommand(Command):
             self.config = None
             return
         else:
-            self.__service = build('customsearch', 'v1', developerKey=self.config['api_key'])
+            try:
+                self.__service = build('customsearch', 'v1', developerKey=self.config['api_key'])
+            except HttpError as ex:
+                self.logger.exception(ex)
+                self.config = None
+                return
 
     def run(self, message, args):
         if not self.config:
@@ -48,6 +53,8 @@ class GoogleCommand(Command):
         for idx, result in enumerate(results):
             title = result['title']
             url = result['formattedUrl']
-            reply += '<b>{0}.</b> <a href="{2}">{1}</a>\n'.format(idx + 1, escape_telegram_html(title),
-                                                                  escape_telegram_html(url))
+            display_url = result['displayLink']
+            reply += '<b>{0}.</b> <a href="{2}">{1}</a> <pre>{3}</pre>\n'.format(idx + 1, escape_telegram_html(title),
+                                                                                 escape_telegram_html(url),
+                                                                                 escape_telegram_html(display_url))
         self.reply(message, reply, parse_mode='HTML')

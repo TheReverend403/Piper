@@ -20,7 +20,12 @@ class LastFMCommand(Command):
             self.config = None
             return
         else:
-            self.__network = pylast.LastFMNetwork(api_key=self.config['api_key'])
+            try:
+                self.__network = pylast.LastFMNetwork(api_key=self.config['api_key'])
+            except pylast.NetworkError as ex:
+                self.logger.exception(ex)
+                self.config = None
+                return
 
     def run(self, message, args):
         if not self.config:
