@@ -1,6 +1,7 @@
 import logging
 
 from lib.database import Database
+from pyemojify import emojify
 
 
 class Command(object):
@@ -15,6 +16,11 @@ class Command(object):
     def reply(self, message, reply, **kwargs):
         if 'disable_web_page_preview' not in kwargs:
             kwargs['disable_web_page_preview'] = True
+
+        if 'emojify' in kwargs and kwargs['emojify']:
+            reply = emojify(reply)
+            del kwargs['emojify']
+
         self.bot.telegram.reply_to(message, reply, **kwargs)
 
     def _has_database(self):
