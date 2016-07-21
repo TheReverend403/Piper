@@ -1,0 +1,3 @@
+#!/bin/sh
+# Copy to .git/hooks/pre-commit
+flake8 pyper/ commands/ lib/ --ignore E501

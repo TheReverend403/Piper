@@ -7,7 +7,7 @@ Python 3.4
 
 # Demo
 
-http://telegram.me/Pyper_Bot
+http://telegram.me/Pyper\_Bot
 
 # Install
 First, acquire a bot token from https://telegram.me/BotFather
@@ -53,3 +53,6 @@ sudo systemctl daemon-reload
 sudo systemctl enable pyper
 sudo systemctl start pyper
 ```
+
+# Contributing
+Install [flake8](http://flake8.pycqa.org/en/latest) and copy `scripts/pre_commit` to `.git/hooks/pre-commit`
