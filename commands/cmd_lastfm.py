@@ -84,5 +84,7 @@ class LastFMCommand(Command):
             reply += ', and so {0} {1} other {2}.'.format(
                 'is' if currently_listening is 1 else 'are', currently_listening,
                 'user' if currently_listening is 1 else 'users')
+        else:
+            reply += ', and is the only user currently doing so.'
 
         self.reply(message, reply, parse_mode='HTML')
