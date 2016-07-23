@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 import configparser
 import logging
-from sys import argv
+import sys
+
 import os
 
 from pyper.bot import Bot
@@ -25,4 +26,4 @@ def main(args):
 
 
 if __name__ == '__main__':
-    main(argv)
+    sys.exit(main(sys.argv))

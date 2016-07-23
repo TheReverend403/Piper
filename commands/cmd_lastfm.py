@@ -1,4 +1,5 @@
 import pylast
+
 from lib.command import Command
 from lib.utils import telegram_escape, emojify
 
@@ -37,15 +38,15 @@ class LastFMCommand(Command):
             if len(args) == 1:
                 self.reply(message, 'Please provide a username. (/np -s <username>)')
                 return
+
             username = args[1].strip()
             try:
                 self._database.set_user_value(user, 'lastfm',
                                               self.__network.get_user(username).get_name(properly_capitalized=True))
                 self.reply(message, 'last.fm username set.')
-                return
             except pylast.WSError:
                 self.reply(message, 'No such last.fm user. Are you trying to trick me? :^)')
-                return
+            return
 
         username = self._database.get_user_value(user, 'lastfm')
         if not username:
