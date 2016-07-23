@@ -12,7 +12,7 @@ class RollCommand(Command):
             return
 
         spec = ''.join(char for char in ''.join(args) if char.isdigit() or char == 'd')
-        dice_count, sep, dice_size = spec.partition('d')
+        dice_count, __, dice_size = spec.partition('d')
         if not dice_count or not dice_size:
             self.reply(message, 'Invalid roll specification. Example: */roll 3d6*', parse_mode='Markdown')
             return
@@ -24,5 +24,5 @@ class RollCommand(Command):
                        parse_mode='Markdown')
             return
 
-        rolls = [random.SystemRandom().randint(1, dice_size) for _ in range(dice_count)]
+        rolls = [random.SystemRandom().randint(1, dice_size)] * dice_count
         self.reply(message, '[{0}] = {1}'.format(', '.join(map(str, rolls)), sum(rolls)))
