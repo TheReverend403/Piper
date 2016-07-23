@@ -11,20 +11,20 @@ class GoogleCommand(Command):
 
     def __init__(self, bot, config):
         super().__init__(bot, config)
-        if not self.config or 'api_key' not in self.config or 'custom_search_id' not in self.config:
-            self.logger.error('Google API keys are not configured.')
-            self.config = None
+        if not self._config or 'api_key' not in self._config or 'custom_search_id' not in self._config:
+            self._logger.error('Google API keys are not configured.')
+            self._config = None
             return
         else:
             try:
-                self.__service = build('customsearch', 'v1', developerKey=self.config['api_key'])
+                self.__service = build('customsearch', 'v1', developerKey=self._config['api_key'])
             except HttpError as ex:
-                self.logger.exception(ex)
-                self.config = None
+                self._logger.exception(ex)
+                self._config = None
                 return
 
     def run(self, message, args):
-        if not self.config:
+        if not self._config:
             self.reply(message, 'Google command is not configured!')
             return
 
@@ -33,10 +33,10 @@ class GoogleCommand(Command):
             return
 
         try:
-            res = self.__service.cse().list(q=' '.join(args), cx=self.config['custom_search_id'], num=5).execute()
+            res = self.__service.cse().list(q=' '.join(args), cx=self._config['custom_search_id'], num=5).execute()
         except HttpError as ex:
             self.reply(message, 'Error occurred while fetching search results!')
-            self.logger.exception(ex)
+            self._logger.exception(ex)
             return
 
         if 'items' not in res:

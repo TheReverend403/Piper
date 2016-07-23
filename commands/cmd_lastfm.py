@@ -15,20 +15,20 @@ class LastFMCommand(Command):
 
     def __init__(self, bot, config):
         super().__init__(bot, config)
-        if not self.config or 'api_key' not in self.config:
-            self.logger.error('last.fm API key is not configured.')
-            self.config = None
+        if not self._config or 'api_key' not in self._config:
+            self._logger.error('last.fm API key is not configured.')
+            self._config = None
             return
         else:
             try:
-                self.__network = pylast.LastFMNetwork(api_key=self.config['api_key'])
+                self.__network = pylast.LastFMNetwork(api_key=self._config['api_key'])
             except pylast.NetworkError as ex:
-                self.logger.exception(ex)
-                self.config = None
+                self._logger.exception(ex)
+                self._config = None
                 return
 
     def run(self, message, args):
-        if not self.config:
+        if not self._config:
             self.reply(message, 'last.fm command is not configured!')
             return
 
@@ -39,15 +39,15 @@ class LastFMCommand(Command):
                 return
             username = args[1].strip()
             try:
-                self.database.set_user_value(user, 'lastfm',
-                                             self.__network.get_user(username).get_name(properly_capitalized=True))
+                self._database.set_user_value(user, 'lastfm',
+                                              self.__network.get_user(username).get_name(properly_capitalized=True))
                 self.reply(message, 'last.fm username set.')
                 return
             except pylast.WSError:
                 self.reply(message, 'No such last.fm user. Are you trying to trick me? :^)')
                 return
 
-        username = self.database.get_user_value(user, 'lastfm')
+        username = self._database.get_user_value(user, 'lastfm')
         if not username:
             self.reply(message, 'You have no last.fm username set. Please set one with /np -s <username>')
             return

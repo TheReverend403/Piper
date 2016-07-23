@@ -17,7 +17,7 @@ class KernelCommand(Command):
             response = requests.get('https://www.kernel.org/releases.json')
         except requests.exceptions.RequestException as ex:
             self.reply(message, 'Error: {0}'.format(ex.strerror))
-            self.logger.exception(ex)
+            self._logger.exception(ex)
             return
         finally:
             if response is not None:

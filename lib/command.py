@@ -7,10 +7,10 @@ from lib.utils import emojify
 class Command(object):
     def __init__(self, bot, config):
         self.bot = bot
-        self.config = config
-        self.logger = logging.getLogger('pyper.command.' + self.name)
+        self._config = config
+        self._logger = logging.getLogger('pyper.command.' + self.name)
         if self._has_database():
-            self.database = Database('data/{0}.json'.format(self.name))
+            self._database = Database('data/{0}.json'.format(self.name))
         self.aliases = self._get_aliases()
 
     def reply(self, message, reply, **kwargs):

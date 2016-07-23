@@ -15,7 +15,7 @@ class WhatTheCommitCommand(Command):
             response = requests.get('http://whatthecommit.com')
         except requests.exceptions.RequestException as ex:
             self.reply(message, 'Error: {0}'.format(ex.strerror))
-            self.logger.exception(ex)
+            self._logger.exception(ex)
             return
         finally:
             if response is not None:
