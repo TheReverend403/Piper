@@ -1,4 +1,5 @@
 from lib.command import Command
+from lib.utils import telegram_escape
 
 
 class HelpCommand(Command):
@@ -9,10 +10,10 @@ class HelpCommand(Command):
     def run(self, message, args):
         reply = 'Hi! I\'m {0} and these are my commands: \n\n'.format(self.bot.telegram.get_me().username)
         for command in self.bot.commands.values():
-            reply += '/{0} - {1}'.format(command.name, command.description)
+            reply += '/{0} - <b>{1}</b>'.format(telegram_escape(command.name), telegram_escape(command.description))
             if command.aliases:
-                reply += ' (Aliases: /{0})'.format(', /'.join(command.aliases))
+                reply += ' <b>(</b>Aliases: /{0}<b>)</b>'.format(telegram_escape(', /'.join(command.aliases)))
             reply += '\n'
 
         reply += '\nYou can find my source code at https://github.com/TheReverend403/Pyper'
-        self.reply(message, reply)
+        self.reply(message, reply, parse_mode='HTML')
