@@ -3,9 +3,8 @@ import requests
 from lib.command import Command
 
 
-# https://github.com/amureki/isup/blob/master/isup/main.py
 def get_status(host):
-    website_url = '{0}{1}.json'.format('http://isitup.org/', host)
+    website_url = 'http://isitup.org/{0}.json'.format(host)
     response = requests.get(website_url)
     data = response.json()
     return data.get('status_code', 0), data.get('response_ip', 0), data.get('response_time', 0)
