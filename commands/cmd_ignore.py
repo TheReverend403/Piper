@@ -17,7 +17,7 @@ class IgnoreCommand(Command):
             self.reply(message, 'You cannot ask me to ignore yourself!')
             return
 
-        if self.is_admin(user):
+        if self.bot.is_admin(user):
             self.reply(message, 'I cannot ignore a bot admin!')
             return
 
