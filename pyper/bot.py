@@ -18,9 +18,19 @@ class Bot(object):
         self._logger = logging.getLogger('pyper')
         self._database = Database('data/pyper.json')
         self.admins = []
+        self._init_config()
         self.commands = {}
         self._init_commands()
         self.telegram.set_update_listener(self._handle_messages)
+
+    def _init_config(self):
+        self._logger.info('Loading config.')
+        try:
+            if self._config.has_option('bot', 'admins'):
+                self.admins = json.loads(self._config.get('bot', 'admins'))
+        except ValueError as ex:
+            self._logger.exception(ex)
+        self._logger.info('Bot admin IDs: %s', self.admins)
 
     def _init_commands(self):
         self._logger.info('Loading commands.')
@@ -38,12 +48,6 @@ class Bot(object):
         except ValueError as ex:
             self._logger.exception(ex)
 
-        try:
-            if self._config.has_option('bot', 'admins'):
-                self.admins = json.loads(self._config.get('bot', 'admins'))
-        except ValueError as ex:
-            self._logger.exception(ex)
-
         for command in Command.__subclasses__():
             if command.name not in disabled_commands:
                 self._enable_command(command)
@@ -57,23 +61,28 @@ class Bot(object):
     def _handle_messages(self, messages):
         for message in messages:
             self._logger.debug(message)
-            if message.text and message.from_user and message.text.startswith('/'):
+
+            if not message.text or not message.from_user:
+                continue
+            user = message.from_user
+            if self._database.get_user_value(message.from_user, 'ignored'):
+                self._logger.info('Ignoring message {0} because {1} is ignored.', message, user)
+                continue
+
+            if message.text.startswith('/'):
                 message_text = message.text.strip('/')
                 if not message_text:
                     return
 
                 command_split = message_text.split()
-                command_name, _, _ = ''.join(command_split[:1]).lower().partition('@')
+                command_trigger, _, _ = ''.join(command_split[:1]).lower().partition('@')
                 args = list(filter(bool, command_split[1:]))
 
                 for command in self.commands:
                     command = self.commands[command]
-                    if self._database.get_user_value(message.from_user, 'ignored'):
-                        return
-                    if command_name == command.name or command_name in command.aliases:
-                        self._logger.info('Command %s with args [%s] invoked by %s', command.name, ', '.join(args),
-                                          message.from_user)
-                        if command.authorized(message.from_user):
+                    if command_trigger == command.name or command_trigger in command.aliases:
+                        self._logger.info('Command \'%s\' with args %s invoked by %s', command.name, args, user)
+                        if command.authorized(user):
                             command.run(message, args)
                         else:
                             command.reply(message, 'You are not authorized to use that command!')
