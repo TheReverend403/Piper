@@ -1,11 +1,13 @@
-import ujson as json
 import logging
+import ujson as json
 
 import os
 import requests
 import telebot
+
 from lib import importdir
 from lib.command import Command
+from lib.database import Database
 
 
 class Bot(object):
@@ -14,6 +16,8 @@ class Bot(object):
         self.telegram = telebot.TeleBot(config.get('bot', 'key'), skip_pending=True)
         telebot.logger.setLevel(logging.WARNING)
         self._logger = logging.getLogger('pyper')
+        self._database = Database('data/pyper.json')
+        self.admins = []
         self.commands = {}
         self._init_commands()
         self.telegram.set_update_listener(self._handle_messages)
@@ -31,6 +35,12 @@ class Bot(object):
         try:
             if self._config.has_option('bot', 'disabled_commands'):
                 disabled_commands = json.loads(self._config.get('bot', 'disabled_commands'))
+        except ValueError as ex:
+            self._logger.exception(ex)
+
+        try:
+            if self._config.has_option('bot', 'admins'):
+                self.admins = json.loads(self._config.get('bot', 'admins'))
         except ValueError as ex:
             self._logger.exception(ex)
 
@@ -58,10 +68,15 @@ class Bot(object):
 
                 for command in self.commands:
                     command = self.commands[command]
+                    if self._database.get_user_value(message.from_user, 'ignored'):
+                        return
                     if command_name == command.name or command_name in command.aliases:
                         self._logger.info('Command %s with args [%s] invoked by %s', command.name, ', '.join(args),
                                           message.from_user)
-                        command.run(message, args)
+                        if command.authorized(message.from_user):
+                            command.run(message, args)
+                        else:
+                            command.reply(message, 'You are not authorized to use that command!')
 
     def poll(self):
         try:
@@ -78,3 +93,12 @@ class Bot(object):
             config = dict(self._config.items(command.name)) if self._config.has_section(command.name) else None
             command = command(self, config)
             self.commands[command.name] = command
+
+    def ignore(self, user):
+        self._database.set_user_value(user, 'ignored', True)
+
+    def unignore(self, user):
+        self._database.set_user_value(user, 'ignored', False)
+
+    def is_me(self, user):
+        return user.id == self.telegram.get_me().id

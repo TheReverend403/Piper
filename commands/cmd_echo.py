@@ -7,6 +7,6 @@ class EchoCommand(Command):
 
     def run(self, message, args):
         if args:
-            self.reply(message, ' '.join(args), emojify=True)
+            self.reply(message, args, emojify=True)
         else:
             self.reply(message, 'Please supply some args!')

@@ -3,6 +3,8 @@
 key = null
 # JSON list of disabled command names. Set to [] or delete this whole line to enable all commands.
 disabled_commands = ["whatthecommit"]
+# JSON list of admin user IDs. Find out your id with /id.
+admins = [0, 1, 2]
 # Load extra commands from .py files in this directory.
 extra_commands_dir =
 

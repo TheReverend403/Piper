@@ -1,5 +1,5 @@
 from lib.command import Command
-from lib.utils import telegram_escape
+from lib.utils import telegram_escape, emojify
 
 
 class HelpCommand(Command):
@@ -8,8 +8,11 @@ class HelpCommand(Command):
     description = 'Lists all bot commands and their descriptions.'
 
     def run(self, message, args):
-        reply = 'Hi! I\'m {0} and these are my commands: \n\n'.format(self.bot.telegram.get_me().username)
+        reply = emojify('Hi! I\'m {0} and these are my commands.\n\n'.format(
+            self.bot.telegram.get_me().username))
         for command in self.bot.commands.values():
+            if command.admin_only:
+                continue
             reply += '/{0} - <b>{1}</b>'.format(telegram_escape(command.name), telegram_escape(command.description))
             if command.aliases:
                 reply += ' <b>(</b>Aliases: /{0}<b>)</b>'.format(telegram_escape(', /'.join(command.aliases)))
