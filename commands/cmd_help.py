@@ -11,11 +11,13 @@ class HelpCommand(Command):
         reply = emojify('Hi! I\'m {0} and these are my commands.\n\n'.format(
             self.bot.telegram.get_me().username))
         for command in self.bot.commands.values():
-            if command.admin_only:
+            if not command.authorized(message.from_user):
                 continue
             reply += '/{0} - <b>{1}</b>'.format(telegram_escape(command.name), telegram_escape(command.description))
             if command.aliases:
                 reply += ' <b>(</b>Aliases: /{0}<b>)</b>'.format(telegram_escape(', /'.join(command.aliases)))
+            if command.admin_only:
+                reply += emojify(' (:lock:)')
             reply += '\n'
 
         reply += '\nYou can find my source code at https://github.com/TheReverend403/Pyper'

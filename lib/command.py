@@ -26,7 +26,7 @@ class Command(object):
 
     def authorized(self, user):
         if self.admin_only:
-            return self.is_admin(user)
+            return self.bot.is_admin(user)
         return True
 
     def reply(self, message, reply, **kwargs):
@@ -64,6 +64,3 @@ class Command(object):
 
     def __get_aliases(self):
         return self.aliases if hasattr(self, 'aliases') else []
-
-    def is_admin(self, user):
-        return user.id in self.bot.admins

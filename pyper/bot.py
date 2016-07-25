@@ -102,3 +102,6 @@ class Bot(object):
 
     def is_me(self, user):
         return user.id == self.telegram.get_me().id
+
+    def is_admin(self, user):
+        return user.id in self.admins
