@@ -97,8 +97,6 @@ class Bot(object):
             self._logger.exception(ex)
             self.telegram.stop_polling()
             self.poll()
-        except KeyboardInterrupt:
-            self.telegram.stop_polling()
 
     def _enable_command(self, command):
         if command not in self.commands.values():
