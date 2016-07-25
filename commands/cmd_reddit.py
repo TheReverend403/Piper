@@ -42,6 +42,7 @@ class RedditCommand(Command):
         link_karma = user_data['link_karma']
         comment_karma = user_data['comment_karma']
         is_gold = user_data['is_gold']
+        is_verified = user_data['has_verified_email']
 
         joined = datetime.datetime.fromtimestamp(user_data['created_utc'])
         diff = dateutil.relativedelta.relativedelta(joined, datetime.datetime.now())
@@ -50,8 +51,13 @@ class RedditCommand(Command):
 
         reply = '<b>Account info for</b> <a href="https://reddit.com{0}">{0}</a>'.format(
             telegram_escape(pretty_username))
-        if is_gold:
-            reply += emojify(' (:trophy:)')
+        if is_gold or is_verified:
+            reply += ' ('
+            if is_gold:
+                reply += emojify(':trophy:')
+            if is_verified:
+                reply += emojify(':envelope:')
+            reply += ')'
         reply += '\n'
         reply += '<b>Link Karma:</b> {0}\n'.format(link_karma)
         reply += '<b>Comment Karma:</b> {0}\n'.format(comment_karma)
