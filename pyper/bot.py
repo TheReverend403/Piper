@@ -8,6 +8,7 @@ import telebot
 from lib import importdir
 from lib.command import Command
 from lib.database import Database
+from lib.utils import user_to_string
 
 
 class Bot(object):
@@ -66,7 +67,8 @@ class Bot(object):
                 continue
             user = message.from_user
             if self._database.get_user_value(message.from_user, 'ignored'):
-                self._logger.info('Ignoring message {0} because {1} is ignored.', message, user)
+                self._logger.info('Ignoring message %s because user %s: %s is ignored.',
+                                  message, user.id, user_to_string(user))
                 continue
 
             if message.text.startswith('/'):
@@ -81,7 +83,8 @@ class Bot(object):
                 for command in self.commands:
                     command = self.commands[command]
                     if command_trigger == command.name or command_trigger in command.aliases:
-                        self._logger.info('Command \'%s\' with args %s invoked by %s', command.name, args, user)
+                        self._logger.info('Command \'%s\' with args %s invoked by user %s: %s',
+                                          command.name, args, user.id, user_to_string(user))
                         if command.authorized(user):
                             command.run(message, args)
                         else:

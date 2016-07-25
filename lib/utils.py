@@ -23,3 +23,13 @@ def emojify(text):
     if type(text) is list:
         return [emojify(item) for item in text]
     return emoji.emojize(text, use_aliases=True)
+
+
+def user_to_string(user):
+    pretty_user = user.first_name
+    if user.last_name:
+        pretty_user += ' {0}'.format(user.last_name)
+
+    if user.username:
+        pretty_user += ' ({0})'.format(user.username)
+    return pretty_user
