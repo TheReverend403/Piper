@@ -20,8 +20,8 @@ class PingCommand(Command):
         self.bot.telegram.send_chat_action(message.chat.id, 'typing')
         try:
             ping = str(subprocess.check_output(
-                ['ping', '-n' if platform.system().lower() == 'windows' else '-c', '1', host], stderr=subprocess.STDOUT,
-                timeout=5))
+                ['ping', '-n' if platform.system().lower() == 'windows' else '-c', '1', host],
+                stderr=subprocess.STDOUT, timeout=5))
         except subprocess.TimeoutExpired as ex:
             self.reply(message, '{0} looks down from here. (Timed out after {1} seconds)'.format(host, ex.timeout),
                        disable_web_page_preview=True)
