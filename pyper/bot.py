@@ -92,9 +92,10 @@ class Bot(object):
 
     def poll(self):
         try:
-            self.telegram.polling(none_stop=True, timeout=3)
-        except requests.exceptions.ConnectionError as ex:
+            self.telegram.polling(none_stop=True, timeout=5)
+        except requests.exceptions.RequestException as ex:
             self._logger.exception(ex)
+            self._logger.warn('Restarting polling due to RequestException.')
             self.telegram.stop_polling()
             self.poll()
 
