@@ -92,6 +92,7 @@ class Bot(object):
 
     def poll(self):
         try:
+            self._logger.info('Started polling.')
             self.telegram.polling(none_stop=True, timeout=5)
         except requests.exceptions.RequestException as ex:
             self._logger.exception(ex)
