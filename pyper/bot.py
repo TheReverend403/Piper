@@ -8,7 +8,7 @@ import telebot
 from lib import importdir
 from lib.command import Command
 from lib.database import Database
-from lib.utils import user_to_string
+from lib.utils import user_to_string, chat_to_string
 
 
 class Bot(object):
@@ -62,6 +62,14 @@ class Bot(object):
     def _handle_messages(self, messages):
         for message in messages:
             self._logger.debug(message)
+            if message.new_chat_member:
+                if self.is_me(message.new_chat_member):
+                    self._logger.info('Joined chat %s', chat_to_string(message.chat))
+                    continue
+            if message.left_chat_member:
+                if self.is_me(message.left_chat_member):
+                    self._logger.info('Left chat %s', chat_to_string(message.chat))
+                    continue
 
             if not message.text or not message.from_user:
                 continue
@@ -83,11 +91,17 @@ class Bot(object):
                 for command in self.commands:
                     command = self.commands[command]
                     if command_trigger == command.name or command_trigger in command.aliases:
-                        self._logger.info('Command \'%s\' with args %s invoked by user %s: %s',
-                                          command.name, args, user.id, user_to_string(user))
+                        log_msg = 'Command \'{0}\' with args {1} invoked by user {2}'.format(command.name, args,
+                                                                                             user_to_string(user))
+                        if message.chat.type != 'private':
+                            log_msg += ' from chat {0}'.format(chat_to_string(message.chat))
+
                         if command.authorized(user):
+                            self._logger.info(log_msg)
                             command.run(message, args)
                         else:
+                            log_msg += ', but access was denied.'
+                            self._logger.info(log_msg)
                             command.reply(message, 'You are not authorized to use that command!')
 
     def poll(self):

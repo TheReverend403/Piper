@@ -26,10 +26,21 @@ def emojify(text):
 
 
 def user_to_string(user):
-    pretty_user = user.first_name
+    pretty_user = '{0}: {1}'.format(user.id, user.first_name)
     if user.last_name:
         pretty_user += ' {0}'.format(user.last_name)
-
     if user.username:
-        pretty_user += ' ({0})'.format(user.username)
+        pretty_user += ' (@{0})'.format(user.username)
     return pretty_user
+
+
+def chat_to_string(chat):
+    if chat.type == 'private':
+        return user_to_string(chat)
+    pretty_chat = '{0}: [{1}]'.format(chat.id, chat.type)
+    if chat.username or chat.title:
+        if chat.title:
+            pretty_chat += ' [{0}]'.format(chat.title)
+        if chat.username:
+            pretty_chat += ' (@{0})'.format(chat.username)
+    return pretty_chat
