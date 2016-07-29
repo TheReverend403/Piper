@@ -8,8 +8,7 @@ class HelpCommand(Command):
     description = 'Lists all bot commands and their descriptions.'
 
     def run(self, message, args):
-        reply = emojify('Hi! I\'m {0} and these are my commands.\n\n'.format(
-            self.bot.telegram.get_me().username))
+        reply = emojify('Hi! I\'m {0} and these are my commands.\n\n'.format(self.bot.bot_user.username))
         for command in self.bot.commands.values():
             if not command.authorized(message.from_user):
                 continue
