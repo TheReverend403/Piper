@@ -55,9 +55,9 @@ class Bot(object):
             else:
                 del command
 
-        self._logger.info('Enabled commands: [%s].', ', '.join(self.commands.keys()))
+        self._logger.info('Enabled commands: %s.', self.commands.keys())
         if disabled_commands:
-            self._logger.info('Disabled commands: [%s].', ', '.join(disabled_commands))
+            self._logger.info('Disabled commands: %s.', disabled_commands)
 
     def _handle_messages(self, messages):
         for message in messages:
@@ -75,8 +75,7 @@ class Bot(object):
                 continue
             user = message.from_user
             if self._database.get_user_value(message.from_user, 'ignored'):
-                self._logger.info('Ignoring message %s because user %s: %s is ignored.',
-                                  message, user.id, user_to_string(user))
+                self._logger.info('Ignoring message %s because user %s is ignored.', message, user_to_string(user))
                 continue
 
             if message.text.startswith('/'):
