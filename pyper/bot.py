@@ -22,7 +22,7 @@ class Bot(object):
         self._init_config()
         self.commands = {}
         self._init_commands()
-        self.telegram.set_update_listener(self._handle_messages)
+        self._init_handlers()
 
     def _init_config(self):
         self._logger.info('Loading config.')
@@ -59,51 +59,54 @@ class Bot(object):
         if disabled_commands:
             self._logger.info('Disabled commands: %s.', disabled_commands)
 
-    def _handle_messages(self, messages):
-        for message in messages:
-            self._logger.debug(message)
-            if message.new_chat_member:
-                if self.is_me(message.new_chat_member):
-                    self._logger.info('Joined chat %s', chat_to_string(message.chat))
-                    continue
-            if message.left_chat_member:
-                if self.is_me(message.left_chat_member):
-                    self._logger.info('Left chat %s', chat_to_string(message.chat))
-                    continue
+    def _init_handlers(self):
+        @self.telegram.message_handler(func=lambda m: m.new_chat_member and self.is_me(m.new_chat_member))
+        def handle_join(m):
+            self._logger.info('Joined chat %s', chat_to_string(m.chat))
 
-            if not message.text or not message.from_user:
-                continue
-            user = message.from_user
-            if self._database.get_user_value(message.from_user, 'ignored'):
-                self._logger.info('Ignoring message %s because user %s is ignored.', message, user_to_string(user))
-                continue
+        @self.telegram.message_handler(func=lambda m: m.left_chat_member and self.is_me(m.left_chat_member))
+        def handle_quit(m):
+            self._logger.info('Left chat %s', chat_to_string(m.chat))
 
-            if message.text.startswith('/'):
-                message_text = message.text.strip('/')
-                if not message_text:
-                    continue
+        @self.telegram.message_handler(func=lambda m: m.text.startswith('/') and m.from_user, content_types=['text'])
+        def handle_command(m):
+            self._handle_command(m)
 
-                command_split = message_text.split()
-                command_trigger, __, bot_name = ''.join(command_split[:1]).lower().partition('@')
-                if bot_name and bot_name != self.telegram.get_me().username:
-                    continue
-                args = list(filter(bool, command_split[1:]))
+        @self.telegram.message_handler(func=lambda: True)
+        def handle_message(m):
+            self._logger.info(m)
 
-                for command in self.commands:
-                    command = self.commands[command]
-                    if command_trigger == command.name or command_trigger in command.aliases:
-                        log_msg = 'Command \'{0}\' with args {1} invoked by user {2}'.format(command.name, args,
-                                                                                             user_to_string(user))
-                        if message.chat.type != 'private':
-                            log_msg += ' from chat {0}'.format(chat_to_string(message.chat))
+    def _handle_command(self, message):
+        user = message.from_user
+        if self._database.get_user_value(message.from_user, 'ignored'):
+            self._logger.info('Ignoring message %s because user %s is ignored.', message, user_to_string(user))
+            return
 
-                        if command.authorized(user):
-                            self._logger.info(log_msg)
-                            command.run(message, args)
-                        else:
-                            log_msg += ', but access was denied.'
-                            self._logger.info(log_msg)
-                            command.reply(message, 'You are not authorized to use that command!')
+        message_text = message.text.strip('/')
+        if not message_text:
+            return
+
+        command_split = message_text.split()
+        command_trigger, __, bot_name = ''.join(command_split[:1]).lower().partition('@')
+        if bot_name and bot_name != self.telegram.get_me().username:
+            return
+        args = list(filter(bool, command_split[1:]))
+
+        for command in self.commands:
+            command = self.commands[command]
+            if command_trigger == command.name or command_trigger in command.aliases:
+                log_msg = 'Command \'{0}\' with args {1} invoked by user {2}'.format(command.name, args,
+                                                                                     user_to_string(user))
+                if message.chat.type != 'private':
+                    log_msg += ' from chat {0}'.format(chat_to_string(message.chat))
+
+                if command.authorized(user):
+                    self._logger.info(log_msg)
+                    command.run(message, args)
+                else:
+                    log_msg += ', but access was denied.'
+                    self._logger.info(log_msg)
+                    command.reply(message, 'You are not authorized to use that command!')
 
     def poll(self):
         try:
