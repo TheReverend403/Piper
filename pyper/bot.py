@@ -55,7 +55,7 @@ class Bot(object):
             else:
                 del command
 
-        self._logger.info('Enabled commands: %s.', self.commands.keys())
+        self._logger.info('Enabled commands: %s.', list(self.commands.keys()))
         if disabled_commands:
             self._logger.info('Disabled commands: %s.', disabled_commands)
 
