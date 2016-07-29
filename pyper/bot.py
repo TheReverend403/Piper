@@ -82,7 +82,7 @@ class Bot(object):
             self._logger.info('Ignoring message %s because user %s is ignored.', message, user_to_string(user))
             return
 
-        message_text = message.text.strip('/ ')
+        message_text = message.text.lstrip('/ \n\r')
         if not message_text:
             return
 
