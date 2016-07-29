@@ -73,9 +73,9 @@ class Bot(object):
         def handle_command(m):
             self._handle_command(m)
 
-        @self.telegram.message_handler(func=lambda: True)
+        @self.telegram.message_handler(func=lambda m: True)
         def handle_message(m):
-            self._logger.info(m)
+            self._logger.debug('Update: %s', m)
 
     def _handle_command(self, message):
         user = message.from_user
