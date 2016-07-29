@@ -85,7 +85,9 @@ class Bot(object):
                     return
 
                 command_split = message_text.split()
-                command_trigger, __, __ = ''.join(command_split[:1]).lower().partition('@')
+                command_trigger, __, bot_name = ''.join(command_split[:1]).lower().partition('@')
+                if bot_name and bot_name != self.telegram.get_me().username:
+                    return
                 args = list(filter(bool, command_split[1:]))
 
                 for command in self.commands:
@@ -121,9 +123,11 @@ class Bot(object):
             self.commands[command.name] = command
 
     def ignore(self, user):
+        self._logger.info('Ignored user %s', user_to_string(user))
         self._database.set_user_value(user, 'ignored', True)
 
     def unignore(self, user):
+        self._logger.info('Unignored user %s', user_to_string(user))
         self._database.set_user_value(user, 'ignored', False)
 
     def is_me(self, user):
