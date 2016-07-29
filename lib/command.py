@@ -1,5 +1,8 @@
 import logging
 
+import os
+import sys
+
 from lib.database import Database
 from lib.utils import emojify
 
@@ -19,10 +22,13 @@ class Command(object):
         self._logger = logging.getLogger('pyper.command.' + self.name)
 
         if self.__has_database():
-            self._database = Database('data/{0}.json'.format(self.name))
+            database_path = os.path.realpath('{0}/../../data/{1}.json'.format(os.path.realpath(sys.argv[0]), self.name))
+            self._logger.debug('Storing database for %s at %s', self.name, database_path)
+            self._database = Database(database_path)
 
         self.aliases = self.__get_aliases()
         self.admin_only = self.__is_admin_only()
+        self._logger.debug('Loaded command %s.', self.name)
 
     def authorized(self, user):
         if self.admin_only:
