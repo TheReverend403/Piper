@@ -68,7 +68,8 @@ class Bot(object):
         def handle_quit(m):
             self._logger.info('Left chat %s', chat_to_string(m.chat))
 
-        @self.telegram.message_handler(func=lambda m: m.text.startswith('/') and m.from_user, content_types=['text'])
+        @self.telegram.message_handler(func=lambda m: m.from_user and m.text.startswith('/') and m.text.strip('/'),
+                                       content_types=['text'])
         def handle_command(m):
             self._handle_command(m)
 
@@ -83,9 +84,6 @@ class Bot(object):
             return
 
         message_text = message.text.strip('/')
-        if not message_text:
-            return
-
         command_split = message_text.split()
         command_trigger, __, bot_name = ''.join(command_split[:1]).lower().partition('@')
         if bot_name and bot_name != self.telegram.get_me().username:
