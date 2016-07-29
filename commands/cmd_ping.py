@@ -32,7 +32,7 @@ class PingCommand(Command):
                            disable_web_page_preview=True)
             return
 
-        ip_match = re.match('.*\((.+)\):.*', ping)
+        ip_match = re.match('.*\((.+)\):?.*', ping)
         time_match = re.match('.*time=(\d+)', ping)
         time = time_match.group(1).strip() if time_match and time_match.groups() else 0
         ip = ip_match.group(1).strip() if ip_match and ip_match.groups() else None
