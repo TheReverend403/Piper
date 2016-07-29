@@ -13,7 +13,7 @@ class PingCommand(Command):
 
     def run(self, message, args):
         if not args:
-            self.reply(message, 'Please supply a host to check.')
+            self.reply(message, 'Pong!')
             return
 
         host = args[0].strip()
