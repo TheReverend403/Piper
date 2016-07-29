@@ -81,12 +81,12 @@ class Bot(object):
             if message.text.startswith('/'):
                 message_text = message.text.strip('/')
                 if not message_text:
-                    return
+                    continue
 
                 command_split = message_text.split()
                 command_trigger, __, bot_name = ''.join(command_split[:1]).lower().partition('@')
                 if bot_name and bot_name != self.telegram.get_me().username:
-                    return
+                    continue
                 args = list(filter(bool, command_split[1:]))
 
                 for command in self.commands:
