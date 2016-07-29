@@ -87,7 +87,8 @@ class Bot(object):
             return
 
         command_split = message_text.split()
-        command_trigger, __, bot_name = ''.join(command_split[:1]).lower().partition('@')
+        command_trigger, __, bot_name = ''.join(command_split[:1]).partition('@')
+        command_trigger = command_trigger.lower()
         if bot_name and bot_name != self.telegram.get_me().username:
             return
         args = list(filter(bool, command_split[1:]))
