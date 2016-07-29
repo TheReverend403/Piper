@@ -15,6 +15,7 @@ class Bot(object):
     def __init__(self, config):
         self._config = config
         self.telegram = telebot.TeleBot(config.get('bot', 'key'), skip_pending=True)
+        self.bot_user = self.telegram.get_me()
         telebot.logger.setLevel(logging.WARNING)
         self._logger = logging.getLogger('pyper')
         self._database = Database('data/pyper.json')
@@ -89,7 +90,7 @@ class Bot(object):
         command_split = message_text.split()
         command_trigger, __, bot_name = ''.join(command_split[:1]).partition('@')
         command_trigger = command_trigger.lower()
-        if bot_name and bot_name != self.telegram.get_me().username:
+        if bot_name and bot_name != self.get_username():
             return
         args = list(filter(bool, command_split[1:]))
 
@@ -125,6 +126,9 @@ class Bot(object):
             command = command(self, config)
             self.commands[command.name] = command
 
+    def get_username(self):
+        return self.bot_user.username
+
     def ignore(self, user):
         self._logger.info('Ignored user %s', user_to_string(user))
         self._database.set_user_value(user, 'ignored', True)
@@ -134,7 +138,7 @@ class Bot(object):
         self._database.set_user_value(user, 'ignored', False)
 
     def is_me(self, user):
-        return user.id == self.telegram.get_me().id
+        return user.id == self.bot_user.id
 
     def is_admin(self, user):
         return user.id in self.admins
