@@ -90,7 +90,7 @@ class Bot(object):
         command_split = message_text.split()
         command_trigger, __, bot_name = ''.join(command_split[:1]).partition('@')
         command_trigger = command_trigger.lower()
-        if bot_name and bot_name != self.get_username():
+        if bot_name and bot_name != self.bot_user.username:
             return
         args = list(filter(bool, command_split[1:]))
 
@@ -125,9 +125,6 @@ class Bot(object):
             config = dict(self._config.items(command.name)) if self._config.has_section(command.name) else None
             command = command(self, config)
             self.commands[command.name] = command
-
-    def get_username(self):
-        return self.bot_user.username
 
     def ignore(self, user):
         self._logger.info('Ignored user %s', user_to_string(user))
