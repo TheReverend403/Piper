@@ -11,7 +11,7 @@ class HashCommand(Command):
         # Remove duplicates
         available_algorithms = list(set(x.lower() for x in hashlib.algorithms_available))
         if not args or len(args) != 2:
-            self.reply(message, '<pre>/{0} [algorithm] [text]</pre>, where [algorithm] is one of {1}'.format(
+            self.reply(message, '<b>/{0} [algorithm] [text]</b>, where [algorithm] is one of {1}'.format(
                 self.name, ', '.join(available_algorithms)), parse_mode='HTML')
             return
 
