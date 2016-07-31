@@ -33,28 +33,30 @@ class GoogleCommand(Command):
             return
 
         try:
+            self.bot.telegram.send_chat_action(message.chat.id, 'typing')
             res = self.__service.cse().list(q=' '.join(args), cx=self._config['custom_search_id'], num=5).execute()
         except HttpError as ex:
             self.reply(message, 'Error occurred while fetching search results!')
             self._logger.exception(ex)
             return
 
-        if 'items' not in res:
-            if 'error' in res:
+        try:
+            results = res['items']
+            search_information = res['searchInformation']
+            reply = 'About {0} results ({1} seconds)\n'.format(search_information['formattedTotalResults'],
+                                                               search_information['formattedSearchTime'])
+            for idx, result in enumerate(results):
+                title = result['title']
+                url = result['formattedUrl']
+                display_url = result['displayLink']
+                reply += '<b>{0}.</b> <a href="{2}">{1}</a> <pre>{3}</pre>\n'.format(idx + 1, telegram_escape(title),
+                                                                                     telegram_escape(url),
+                                                                                     telegram_escape(display_url))
+        except KeyError:
+            try:
                 self.reply(message, res['error']['message'])
-                return
-            self.reply(message, 'No results found!')
+            except KeyError:
+                self.reply(message, 'No results found!')
             return
 
-        results = res['items']
-        search_information = res['searchInformation']
-        reply = 'About {0} results ({1} seconds)\n'.format(search_information['formattedTotalResults'],
-                                                           search_information['formattedSearchTime'])
-        for idx, result in enumerate(results):
-            title = result['title']
-            url = result['formattedUrl']
-            display_url = result['displayLink']
-            reply += '<b>{0}.</b> <a href="{2}">{1}</a> <pre>{3}</pre>\n'.format(idx + 1, telegram_escape(title),
-                                                                                 telegram_escape(url),
-                                                                                 telegram_escape(display_url))
         self.reply(message, reply, parse_mode='HTML')

@@ -35,11 +35,12 @@ class LastFMCommand(Command):
 
         user = message.from_user
         if args and args[0] in SET_STRINGS:
-            if len(args) == 1:
+            try:
+                username = args[1].strip()
+            except KeyError:
                 self.reply(message, 'Please provide a username. (/np -s <username>)')
                 return
 
-            username = args[1].strip()
             try:
                 self._database.set_user_value(user, 'lastfm',
                                               self.__network.get_user(username).get_name(properly_capitalized=True))
@@ -53,6 +54,7 @@ class LastFMCommand(Command):
             self.reply(message, 'You have no last.fm username set. Please set one with /np -s <username>')
             return
 
+        self.bot.telegram.send_chat_action(message.chat.id, 'typing')
         lastfm_user = self.__network.get_user(username)
         current_track = lastfm_user.get_now_playing()
         if not current_track:

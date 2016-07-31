@@ -22,6 +22,7 @@ class RedditCommand(Command):
         try:
             headers = {'User-Agent': 'Pyper, by /u/TheReverend403 - https://github.com/TheReverend403/Pyper'}
             profile_url = 'http://www.reddit.com/user/{0}/about.json'.format(args[0])
+            self.bot.telegram.send_chat_action(message.chat.id, 'typing')
             response = requests.get(profile_url, headers=headers)
         except requests.exceptions.RequestException as ex:
             self.reply(message, 'Error: {0}'.format(ex.strerror))
@@ -32,22 +33,25 @@ class RedditCommand(Command):
                 response.close()
 
         response_data = json.loads(response.text)
-        if 'error' in response_data:
-            self.reply(message, 'Error: {0}'.format(response_data['message']))
+        try:
+            user_data = response_data['data']
+            canonical_username = user_data['name']
+            pretty_username = '/u/{0}'.format(canonical_username)
+            link_karma = user_data['link_karma']
+            comment_karma = user_data['comment_karma']
+            is_gold = user_data['is_gold']
+            is_verified = user_data['has_verified_email']
+
+            joined = datetime.datetime.fromtimestamp(user_data['created_utc'])
+            diff = dateutil.relativedelta.relativedelta(joined, datetime.datetime.now())
+            joined_time = joined.strftime('%B %d, %Y')
+            joined_string = '{0} ({1} years, {2} months ago)'.format(joined_time, abs(diff.years), abs(diff.months))
+        except KeyError:
+            try:
+                self.reply(message, 'Error: {0}'.format(response_data['message']))
+            except KeyError as ex:
+                self.reply(message, str(ex))
             return
-
-        user_data = response_data['data']
-        canonical_username = user_data['name']
-        pretty_username = '/u/{0}'.format(canonical_username)
-        link_karma = user_data['link_karma']
-        comment_karma = user_data['comment_karma']
-        is_gold = user_data['is_gold']
-        is_verified = user_data['has_verified_email']
-
-        joined = datetime.datetime.fromtimestamp(user_data['created_utc'])
-        diff = dateutil.relativedelta.relativedelta(joined, datetime.datetime.now())
-        joined_string = '{0} ({1} years, {2} months ago)'.format(joined.strftime('%B %d, %Y'),
-                                                                 abs(diff.years), abs(diff.months))
 
         reply = '<b>Account info for</b> <a href="https://reddit.com{0}">{0}</a>'.format(
             telegram_escape(pretty_username))

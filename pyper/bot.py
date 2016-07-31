@@ -69,7 +69,8 @@ class Bot(object):
         def handle_quit(m):
             self._logger.info('Left chat %s', chat_to_string(m.chat))
 
-        @self.telegram.message_handler(func=lambda m: m.from_user and m.text.startswith('/'), content_types=['text'])
+        @self.telegram.message_handler(func=lambda m: m.text and m.from_user and m.text.startswith('/'),
+                                       content_types=['text'])
         def handle_command(m):
             self._handle_command(m)
 

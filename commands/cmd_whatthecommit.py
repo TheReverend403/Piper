@@ -12,6 +12,7 @@ class WhatTheCommitCommand(Command):
     def run(self, message, args):
         response = None
         try:
+            self.bot.telegram.send_chat_action(message.chat.id, 'typing')
             response = requests.get('http://whatthecommit.com')
         except requests.exceptions.RequestException as ex:
             self.reply(message, 'Error: {0}'.format(ex.strerror))
