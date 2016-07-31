@@ -21,7 +21,8 @@ class Command(object):
 
         self._logger = logging.getLogger('pyper.command.' + self.name)
 
-        if self.__has_database():
+        self.has_database = self.__has_database()
+        if self.has_database:
             database_path = os.path.realpath('{0}/../../data/{1}.json'.format(os.path.realpath(sys.argv[0]), self.name))
             self._logger.debug('Storing database for %s at %s', self.name, database_path)
             self._database = Database(database_path)
@@ -39,9 +40,12 @@ class Command(object):
         if 'disable_web_page_preview' not in kwargs:
             kwargs['disable_web_page_preview'] = True
 
-        if 'emojify' in kwargs and kwargs['emojify']:
-            reply = emojify(reply)
-            del kwargs['emojify']
+        try:
+            if kwargs['emojify']:
+                reply = emojify(reply)
+                del kwargs['emojify']
+        except KeyError:
+            pass
 
         if type(reply) is list:
             reply = ' '.join(reply)
@@ -49,24 +53,31 @@ class Command(object):
         self.bot.telegram.reply_to(message, reply, **kwargs)
 
     def __has_database(self):
-        if hasattr(self, 'has_database'):
+        try:
             return self.has_database
-        return False
+        except AttributeError:
+            return False
 
     def __is_admin_only(self):
-        if hasattr(self, 'admin_only'):
+        try:
             return self.admin_only
-        return False
+        except AttributeError:
+            return False
 
     def __get_name(self):
-        if hasattr(self, 'name'):
+        try:
             return self.name
-        return None
+        except AttributeError:
+            raise
 
     def __get_description(self):
-        if hasattr(self, 'description'):
+        try:
             return self.description
-        return None
+        except AttributeError:
+            raise
 
     def __get_aliases(self):
-        return self.aliases if hasattr(self, 'aliases') else []
+        try:
+            return self.aliases
+        except AttributeError:
+            return []
