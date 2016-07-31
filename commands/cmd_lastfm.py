@@ -37,7 +37,7 @@ class LastFMCommand(Command):
         if args and args[0] in SET_STRINGS:
             try:
                 username = args[1].strip()
-            except KeyError:
+            except IndexError:
                 self.reply(message, 'Please provide a username. (/np -s <username>)')
                 return
 

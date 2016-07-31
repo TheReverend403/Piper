@@ -25,4 +25,4 @@ class RollCommand(Command):
             return
 
         rolls = [random.SystemRandom().randint(1, dice_size) for __ in range(dice_count)]
-        self.reply(message, '[{0}] = {1}'.format(', '.join(map(str, rolls)), sum(rolls)))
+        self.reply(message, '[{0}] = {1}'.format(', '.join(str(roll) for roll in rolls), sum(rolls)))
