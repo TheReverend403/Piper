@@ -11,15 +11,9 @@ class Command(object):
     def __init__(self, bot, config):
         self.bot = bot
         self._config = config
-
+        self._logger = logging.getLogger('pyper.command.' + self.name)
         self.name = self.__get_name()
         self.description = self.__get_description()
-        if not self.name or not self.description:
-            self._logger.error('Command is missing required attribute \'name\' or \'description\''.format(__name__))
-            del self
-            return
-
-        self._logger = logging.getLogger('pyper.command.' + self.name)
         self.aliases = self.__get_aliases()
         self.admin_only = self.__is_admin_only()
         self._logger.debug('Loaded command %s.', self.name)
