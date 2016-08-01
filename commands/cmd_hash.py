@@ -10,7 +10,7 @@ class HashCommand(Command):
     def run(self, message, args):
         # Remove duplicates
         available_algorithms = list(set(x.lower() for x in hashlib.algorithms_available))
-        if not args or len(args) != 2:
+        if not args or len(args) < 2:
             self.reply(message, '<b>/{0} [algorithm] [text]</b>, where <b>[algorithm]</b> is one of {1}'.format(
                 self.name, ', '.join(available_algorithms)), parse_mode='HTML')
             return
