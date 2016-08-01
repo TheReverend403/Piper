@@ -20,13 +20,6 @@ class Command(object):
             return
 
         self._logger = logging.getLogger('pyper.command.' + self.name)
-
-        self.has_database = self.__has_database()
-        if self.has_database:
-            database_path = os.path.realpath('{0}/../../data/{1}.json'.format(os.path.realpath(sys.argv[0]), self.name))
-            self._logger.debug('Storing database for %s at %s', self.name, database_path)
-            self._database = Database(database_path)
-
         self.aliases = self.__get_aliases()
         self.admin_only = self.__is_admin_only()
         self._logger.debug('Loaded command %s.', self.name)
@@ -51,12 +44,6 @@ class Command(object):
             reply = ' '.join(reply)
 
         self.bot.telegram.reply_to(message, reply, **kwargs)
-
-    def __has_database(self):
-        try:
-            return self.has_database
-        except AttributeError:
-            return False
 
     def __is_admin_only(self):
         try:

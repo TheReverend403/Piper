@@ -12,7 +12,6 @@ class LastFMCommand(Command):
     name = 'lastfm'
     aliases = ['np', 'nowplaying']
     description = 'Post your currently playing song.'
-    has_database = True
 
     def __init__(self, bot, config):
         super().__init__(bot, config)
@@ -42,14 +41,14 @@ class LastFMCommand(Command):
                 return
 
             try:
-                self._database.set_user_value(user, 'lastfm',
-                                              self.__network.get_user(username).get_name(properly_capitalized=True))
+                self.bot.database.set_user_value(user, 'lastfm_username',
+                                                 self.__network.get_user(username).get_name(properly_capitalized=True))
                 self.reply(message, 'last.fm username set.')
             except pylast.WSError:
                 self.reply(message, 'No such last.fm user. Are you trying to trick me? :^)')
             return
 
-        username = self._database.get_user_value(user, 'lastfm')
+        username = self.bot.database.get_user_value(user, 'lastfm_username')
         if not username:
             self.reply(message, 'You have no last.fm username set. Please set one with /np -s <username>')
             return

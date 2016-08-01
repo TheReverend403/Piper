@@ -18,14 +18,14 @@ class Bot(object):
         self.bot_user = self.telegram.get_me()
         telebot.logger.setLevel(logging.WARNING)
         self._logger = logging.getLogger('pyper')
-        self._database = Database('data/pyper.json')
+        self.database = Database('data/pyper.json')
         self.admins = []
-        self._init_config()
+        self.__init_config()
         self.commands = {}
-        self._init_commands()
-        self._init_handlers()
+        self.__init_commands()
+        self.__init_handlers()
 
-    def _init_config(self):
+    def __init_config(self):
         self._logger.info('Loading config.')
         try:
             if self._config.has_option('bot', 'admins'):
@@ -34,7 +34,7 @@ class Bot(object):
             self._logger.exception(ex)
         self._logger.info('Bot admin IDs: %s', self.admins)
 
-    def _init_commands(self):
+    def __init_commands(self):
         self._logger.info('Loading commands.')
         importdir.do('commands', globals())
         if self._config.has_option('bot', 'extra_commands_dir'):
@@ -52,7 +52,7 @@ class Bot(object):
 
         for command in Command.__subclasses__():
             if command.name not in disabled_commands:
-                self._enable_command(command)
+                self.__enable_command(command)
             else:
                 del command
 
@@ -60,27 +60,27 @@ class Bot(object):
         if disabled_commands:
             self._logger.info('Disabled commands: %s.', disabled_commands)
 
-    def _init_handlers(self):
-        @self.telegram.message_handler(func=lambda m: m.new_chat_member and self.is_me(m.new_chat_member))
-        def handle_join(m):
-            self._logger.info('Joined chat %s', chat_to_string(m.chat))
-
-        @self.telegram.message_handler(func=lambda m: m.left_chat_member and self.is_me(m.left_chat_member))
-        def handle_quit(m):
-            self._logger.info('Left chat %s', chat_to_string(m.chat))
-
+    def __init_handlers(self):
         @self.telegram.message_handler(func=lambda m: m.text and m.from_user and m.text.startswith('/'),
                                        content_types=['text'])
         def handle_command(m):
-            self._handle_command(m)
+            self.__update_database_from_message(m)
+            self.__handle_command(m)
 
         @self.telegram.message_handler(func=lambda m: True)
         def handle_message(m):
             self._logger.debug('Update: %s', m)
+            self.__update_database_from_message(m)
 
-    def _handle_command(self, message):
+    def __update_database_from_message(self, message):
+        if message.from_user:
+            self.database.update_user(message.from_user)
+        if message.chat.type != 'private':
+            self.database.update_chat(message.chat)
+
+    def __handle_command(self, message):
         user = message.from_user
-        if self._database.get_user_value(message.from_user, 'ignored'):
+        if self.database.get_user_value(message.from_user, 'ignored'):
             self._logger.info('Ignoring message %s because user %s is ignored.', message, user_to_string(user))
             return
 
@@ -121,7 +121,7 @@ class Bot(object):
             self.telegram.stop_polling()
             self.poll()
 
-    def _enable_command(self, command):
+    def __enable_command(self, command):
         if command not in self.commands.values():
             config = dict(self._config.items(command.name)) if self._config.has_section(command.name) else None
             command = command(self, config)
@@ -129,11 +129,11 @@ class Bot(object):
 
     def ignore(self, user):
         self._logger.info('Ignored user %s', user_to_string(user))
-        self._database.set_user_value(user, 'ignored', True)
+        self.database.set_user_value(user, 'ignored', True)
 
     def unignore(self, user):
         self._logger.info('Unignored user %s', user_to_string(user))
-        self._database.set_user_value(user, 'ignored', False)
+        self.database.set_user_value(user, 'ignored', False)
 
     def is_me(self, user):
         return user.id == self.bot_user.id
