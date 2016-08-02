@@ -12,7 +12,6 @@ class Database(object):
         return value[key] if value and key in value else None
 
     def set_user_value(self, user, key, value):
-        key = '_' + key
         self.insert_else_update_user(user, {key: value})
 
     def insert_else_update_user(self, user, extra_params=None):
@@ -31,6 +30,8 @@ class Database(object):
                 'last_name': user.last_name,
             }, where('id') == user.id)
         if extra_params is not None:
+            for k in extra_params:
+                extra_params['_' + k] = extra_params.pop(k)
             table.update(extra_params, where('id') == user.id)
 
     def process_message(self, message):
