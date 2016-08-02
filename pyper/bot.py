@@ -64,19 +64,13 @@ class Bot(object):
         @self.telegram.message_handler(func=lambda m: m.text and m.from_user and m.text.startswith('/'),
                                        content_types=['text'])
         def handle_command(m):
-            self.__update_database_from_message(m)
+            self.database.process_message(m)
             self.__handle_command(m)
 
         @self.telegram.message_handler(func=lambda m: True)
         def handle_message(m):
             self._logger.debug('Update: %s', m)
-            self.__update_database_from_message(m)
-
-    def __update_database_from_message(self, message):
-        if message.from_user:
-            self.database.update_user(message.from_user)
-        if message.chat.type != 'private':
-            self.database.update_chat(message.chat)
+            self.database.process_message(m)
 
     def __handle_command(self, message):
         user = message.from_user
