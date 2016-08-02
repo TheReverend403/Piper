@@ -1,5 +1,6 @@
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+
 from lib.command import Command
 from lib.utils import telegram_escape
 
@@ -47,11 +48,11 @@ class GoogleCommand(Command):
                                                                search_information['formattedSearchTime'])
             for idx, result in enumerate(results):
                 title = result['title']
-                url = result['formattedUrl']
+                url = result['link']
                 display_url = result['displayLink']
-                reply += '<b>{0}.</b> <a href="{2}">{1}</a> <pre>{3}</pre>\n'.format(idx + 1, telegram_escape(title),
-                                                                                     telegram_escape(url),
-                                                                                     telegram_escape(display_url))
+                reply += '<b>{0}.</b> <a href="{1}">{2}</a>\n<code>{3}</code>\n'.format(idx + 1, telegram_escape(url),
+                                                                                        telegram_escape(title),
+                                                                                        telegram_escape(display_url))
         except KeyError:
             try:
                 self.reply(message, res['error']['message'])
@@ -59,4 +60,5 @@ class GoogleCommand(Command):
                 self.reply(message, 'No results found!')
             return
 
+        self._logger.info(reply)
         self.reply(message, reply, parse_mode='HTML')
