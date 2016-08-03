@@ -75,7 +75,7 @@ class Bot(object):
     def __handle_command(self, message):
         user = message.from_user
         if self.database.get_user_value(message.from_user, 'ignored'):
-            self._logger.info('Ignoring message %s because user %s is ignored.', message, user_to_string(user))
+            self._logger.debug('Ignoring message because user %s is ignored.', user_to_string(user))
             return
 
         message_text = message.text.lstrip('/ \n\r')
