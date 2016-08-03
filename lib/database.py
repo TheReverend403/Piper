@@ -9,7 +9,10 @@ class Database(object):
         key = '_' + key
         table = self.db.table('user_values')
         value = table.get(where('id') == user.id)
-        return value[key] if value and key in value else None
+        try:
+            return value[key]
+        except KeyError:
+            return None
 
     def set_user_value(self, user, key, value):
         self.insert_else_update_user(user, {key: value})
