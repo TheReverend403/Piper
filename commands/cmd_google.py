@@ -57,7 +57,7 @@ class GoogleCommand(Command):
             try:
                 self.reply(message, res['error']['message'])
             except KeyError:
-                self.reply(message, 'No results found');
+                self.reply(message, 'No results found')
                 return
 
         self.reply(message, reply, parse_mode='HTML')
