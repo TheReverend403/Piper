@@ -19,6 +19,7 @@ class GoogleCommand(Command):
             self._config = None
         except KeyError:
             self._logger.error('Google API key is not configured.')
+            self._config = None
         except TypeError:
             self._logger.error('Google API key is not configured.')
 
