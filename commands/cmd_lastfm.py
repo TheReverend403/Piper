@@ -7,6 +7,8 @@ SET_STRINGS = [
     '-s', '-set', '--set', 'set'
 ]
 
+DB_KEY = 'lastfm_username'
+
 
 class LastFMCommand(Command):
     name = 'lastfm'
@@ -15,17 +17,15 @@ class LastFMCommand(Command):
 
     def __init__(self, bot, config):
         super().__init__(bot, config)
-        if not self._config or 'api_key' not in self._config:
-            self._logger.error('last.fm API key is not configured.')
+        try:
+            self.__network = pylast.LastFMNetwork(api_key=self._config['api_key'])
+        except pylast.NetworkError as ex:
+            self._logger.exception(ex)
             self._config = None
-            return
-        else:
-            try:
-                self.__network = pylast.LastFMNetwork(api_key=self._config['api_key'])
-            except pylast.NetworkError as ex:
-                self._logger.exception(ex)
-                self._config = None
-                return
+        except KeyError:
+            self._logger.error('last.fm API key is not configured.')
+        except TypeError:
+            self._logger.error('last.fm API key is not configured.')
 
     def run(self, message, args):
         if not self._config:
@@ -41,14 +41,14 @@ class LastFMCommand(Command):
                 return
 
             try:
-                self.bot.database.set_user_value(user, 'lastfm_username',
+                self.bot.database.set_user_value(user, DB_KEY,
                                                  self.__network.get_user(username).get_name(properly_capitalized=True))
                 self.reply(message, 'last.fm username set.')
             except pylast.WSError:
                 self.reply(message, 'No such last.fm user. Are you trying to trick me? :^)')
             return
 
-        username = self.bot.database.get_user_value(user, 'lastfm_username')
+        username = self.bot.database.get_user_value(user, DB_KEY)
         if not username:
             self.reply(message, 'You have no last.fm username set. Please set one with /np -s <username>')
             return

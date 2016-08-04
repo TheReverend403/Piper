@@ -1,4 +1,5 @@
 from imdbpie import Imdb
+
 from lib.command import Command
 from lib.utils import telegram_escape
 
@@ -8,19 +9,22 @@ class ImdbCommand(Command):
     aliases = ['movie']
     description = 'Searches IMDB for movie titles.'
 
+    def __init__(self, bot, config):
+        super().__init__(bot, config)
+        self._imdb = Imdb(cache=True, exclude_episodes=True)
+
     def run(self, message, args):
         if not args:
             self.reply(message, 'Please supply some search terms!')
             return
 
-        imdb = Imdb(cache=True, exclude_episodes=True)
         self.bot.telegram.send_chat_action(message.chat.id, 'typing')
-        results = imdb.search_for_title(' '.join(args))
+        results = self._imdb.search_for_title(' '.join(args))
         if not results:
             self.reply(message, 'No results found!')
             return
 
-        result = imdb.get_title_by_id(results[0]['imdb_id'])
+        result = self._imdb.get_title_by_id(results[0]['imdb_id'])
         reply = '<b>URL:</b> http://www.imdb.com/title/{0}\n'.format(telegram_escape(result.imdb_id))
         reply += '<b>Title:</b> {0}\n'.format(telegram_escape(result.title))
         reply += '<b>Year:</b> {0}\n'.format(result.year)

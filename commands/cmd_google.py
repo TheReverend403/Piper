@@ -12,17 +12,15 @@ class GoogleCommand(Command):
 
     def __init__(self, bot, config):
         super().__init__(bot, config)
-        if not self._config or 'api_key' not in self._config or 'custom_search_id' not in self._config:
-            self._logger.error('Google API keys are not configured.')
+        try:
+            self.__service = build('customsearch', 'v1', developerKey=self._config['api_key'])
+        except HttpError as ex:
+            self._logger.exception(ex)
             self._config = None
-            return
-        else:
-            try:
-                self.__service = build('customsearch', 'v1', developerKey=self._config['api_key'])
-            except HttpError as ex:
-                self._logger.exception(ex)
-                self._config = None
-                return
+        except KeyError:
+            self._logger.error('Google API key is not configured.')
+        except TypeError:
+            self._logger.error('Google API key is not configured.')
 
     def run(self, message, args):
         if not self._config:
