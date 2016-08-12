@@ -47,7 +47,7 @@ class Command(object):
 
     def __get_name(self):
         try:
-            return self.name
+            return self.name.lower()
         except AttributeError:
             raise
 
@@ -59,6 +59,6 @@ class Command(object):
 
     def __get_aliases(self):
         try:
-            return self.aliases
+            return [alias.lower() for alias in self.aliases]
         except AttributeError:
             return []

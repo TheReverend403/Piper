@@ -136,7 +136,7 @@ class Bot(object):
         if command not in self.commands.values():
             config = dict(self._config.items(command.name)) if self._config.has_section(command.name) else None
             command = command(self, config)
-            self.commands[command.name.lower()] = command
+            self.commands[command.name] = command
 
     def ignore(self, user):
         self._logger.info('Ignored user %s', user_to_string(user))
