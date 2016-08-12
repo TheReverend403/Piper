@@ -1,5 +1,7 @@
 import logging
+import shlex
 import ujson as json
+from builtins import ValueError
 
 import os
 import requests
@@ -9,6 +11,9 @@ from lib import importdir
 from lib.command import Command
 from lib.database import Database
 from lib.utils import user_to_string, chat_to_string
+
+class CommandParseException(Exception):
+    pass
 
 
 class Bot(object):
@@ -72,22 +77,34 @@ class Bot(object):
             self._logger.debug('Update: %s', m)
             self.database.process_message(m)
 
+    def __parse_command(self, message):
+        message_text = message.text.lstrip('/ \n\r')
+        if not message_text:
+            raise CommandParseException('Could not parse message into command: {0}'.format(message_text))
+
+        try:
+            command_split = shlex.split(message_text)
+        except ValueError:
+            command_split = message_text.split()
+        command, __, bot_name = ''.join(command_split.pop(0)).partition('@')
+        command = command.lower()
+
+        if bot_name and bot_name != self.bot_user.username and message.chat.type != 'private':
+            raise CommandParseException('Command not intended for this bot: {0}'.format(message_text))
+
+        args = list(filter(bool, command_split))
+        return command, args
+
     def __handle_command(self, message):
         user = message.from_user
         if self.database.get_user_value(message.from_user, 'ignored'):
             self._logger.debug('Ignoring message because user %s is ignored.', user_to_string(user))
             return
 
-        message_text = message.text.lstrip('/ \n\r')
-        if not message_text:
+        try:
+            command_trigger, args = self.__parse_command(message)
+        except CommandParseException:
             return
-
-        command_split = message_text.split()
-        command_trigger, __, bot_name = ''.join(command_split[:1]).partition('@')
-        command_trigger = command_trigger.lower()
-        if bot_name and bot_name != self.bot_user.username:
-            return
-        args = list(filter(bool, command_split[1:]))
 
         for command in self.commands:
             command = self.commands[command]
