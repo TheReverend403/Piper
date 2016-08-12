@@ -19,14 +19,9 @@ class LastFMCommand(Command):
         super().__init__(bot, config)
         try:
             self.__network = pylast.LastFMNetwork(api_key=self._config['api_key'])
-        except pylast.NetworkError as ex:
+        except (pylast.NetworkError, KeyError, TypeError) as ex:
             self._logger.exception(ex)
             self._config = None
-        except KeyError:
-            self._logger.error('last.fm API key is not configured.')
-            self._config = None
-        except TypeError:
-            self._logger.error('last.fm API key is not configured.')
 
     def run(self, message, args):
         if not self._config:

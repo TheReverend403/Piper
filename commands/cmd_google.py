@@ -14,14 +14,9 @@ class GoogleCommand(Command):
         super().__init__(bot, config)
         try:
             self.__service = build('customsearch', 'v1', developerKey=self._config['api_key'])
-        except HttpError as ex:
+        except (KeyError, HttpError, TypeError) as ex:
             self._logger.exception(ex)
             self._config = None
-        except KeyError:
-            self._logger.error('Google API key is not configured.')
-            self._config = None
-        except TypeError:
-            self._logger.error('Google API key is not configured.')
 
     def run(self, message, args):
         if not self._config:

@@ -1,6 +1,6 @@
 import emoji
 
-HTML_REPLACEMENTS = {
+TELEGRAM_HTML_REPLACEMENTS = {
     '<': '&lt;',
     '>': '&gt;',
     '"': '&quot;'
@@ -15,7 +15,7 @@ def telegram_escape(s):
 
     # Must be done first
     s = s.replace('&', '&amp;')
-    for token, replacement in HTML_REPLACEMENTS.items():
+    for token, replacement in TELEGRAM_HTML_REPLACEMENTS.items():
         s = s.replace(token, replacement)
     return s
 
