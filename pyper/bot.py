@@ -1,5 +1,7 @@
+import datetime
 import logging
 import shlex
+import timeit
 import ujson as json
 from builtins import ValueError
 
@@ -116,7 +118,12 @@ class Bot(object):
 
                 if command.authorized(user):
                     self._logger.info(log_msg)
-                    command.run(message, args)
+                    if self._logger.getEffectiveLevel() == logging.DEBUG:
+                        t = timeit.Timer(lambda: command.run(message, args), 'gc.enable()')
+                        self._logger.debug('Command \'{}\' finished in {:.0f} ms'.format(
+                            command.name, t.timeit(number=1) * 1000))
+                    else:
+                        command.run(message, args)
                 else:
                     log_msg += ', but access was denied.'
                     self._logger.info(log_msg)

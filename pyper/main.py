@@ -18,6 +18,7 @@ def main():
     logging.basicConfig(level=logging.getLevelName(args.loglevel), format='[%(levelname)-7s] %(name)s: %(message)s')
     logging.getLogger('requests').setLevel(logging.WARNING)
     logging.getLogger('googleapiclient.discovery').setLevel(logging.WARNING)
+    logging.getLogger('cachecontrol.controller').setLevel(logging.WARNING)
 
     config = configparser.ConfigParser()
     config.read('config.ini')
