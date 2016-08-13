@@ -120,7 +120,7 @@ class Bot(object):
                     self._logger.info(log_msg)
                     if self._logger.getEffectiveLevel() == logging.DEBUG:
                         t = timeit.Timer(lambda: command.run(message, args), 'gc.enable()')
-                        self._logger.debug('Command \'{}\' finished in {:.0f} ms'.format(
+                        self._logger.debug('Command \'{0}\' finished in {1:.0f} ms'.format(
                             command.name, t.timeit(number=1) * 1000))
                     else:
                         command.run(message, args)
