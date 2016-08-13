@@ -86,7 +86,7 @@ class Bot(object):
             command_split = shlex.split(message_text)
         except ValueError:
             command_split = message_text.split()
-        command, __, bot_name = ''.join(command_split.pop(0)).partition('@')
+        command, __, bot_name = command_split.pop(0).partition('@')
         command = command.lower()
 
         if bot_name and bot_name != self.bot_user.username and message.chat.type != 'private':
