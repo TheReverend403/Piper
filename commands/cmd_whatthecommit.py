@@ -1,5 +1,5 @@
 import requests
-from bs4 import BeautifulSoup
+from lxml import html
 from lib.command import Command
 from lib.utils import telegram_escape
 
