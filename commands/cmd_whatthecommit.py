@@ -10,20 +10,19 @@ class WhatTheCommitCommand(Command):
     description = 'Gets a random commit message from whatthecommit.com'
 
     def run(self, message, args):
+
         response = None
         try:
             self.bot.telegram.send_chat_action(message.chat.id, 'typing')
             response = requests.get('http://whatthecommit.com')
         except requests.exceptions.RequestException as ex:
-            self.reply(message, 'Error: {0}'.format(ex.strerror))
             self._logger.exception(ex)
-            return
+            self.reply(message, 'Error: {0}'.format(ex.strerror))
+        else:
+            doc = html.fromstring(response.text)
+            commit_message = ''.join(doc.xpath('//div[@id="content"]/p/text()')).strip()
+            reply = '<pre>git commit -am "{0}"</pre>'.format(telegram_escape(commit_message.strip()))
+            self.reply(message, reply, parse_mode='HTML')
         finally:
             if response is not None:
                 response.close()
-
-        html = response.text
-        parsed_html = BeautifulSoup(html, 'html.parser')
-        commit_message = parsed_html.body.find('div', id='content').find('p').text
-        reply = '<pre>git commit -am "{0}"</pre>'.format(telegram_escape(commit_message.strip()))
-        self.reply(message, reply, parse_mode='HTML')
