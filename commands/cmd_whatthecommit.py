@@ -20,7 +20,7 @@ class WhatTheCommitCommand(Command):
             self.reply(message, 'Error: {0}'.format(ex.strerror))
         else:
             doc = html.fromstring(response.text)
-            commit_message = ''.join(doc.xpath('//div[@id="content"]/p/text()')).strip()
+            commit_message = doc.xpath('//div[@id="content"]/p/text()')[0].strip()
             reply = '<pre>git commit -am "{0}"</pre>'.format(telegram_escape(commit_message.strip()))
             self.reply(message, reply, parse_mode='HTML')
         finally:
