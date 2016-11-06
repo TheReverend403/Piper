@@ -1,5 +1,5 @@
 import requests
-from bs4 import BeautifulSoup
+from lxml import html
 
 from lib.command import Command
 
@@ -15,15 +15,12 @@ class InsultCommand(Command):
             self.bot.telegram.send_chat_action(message.chat.id, 'typing')
             response = requests.get('http://www.insultgenerator.org')
         except requests.exceptions.RequestException as ex:
-            self.reply(message, 'Error: {0}'.format(ex.strerror))
             self._logger.exception(ex)
-            return
+            self.reply(message, 'Error: {0}'.format(ex.strerror))
+        else:
+            doc = html.fromstring(response.text)
+            insult = ''.join(doc.xpath('//div[@class="wrap"]/text()')).strip()
+            self.reply(message, insult)
         finally:
             if response is not None:
                 response.close()
-
-        html = response.text
-        parsed_html = BeautifulSoup(html, 'html.parser')
-        insult_html = parsed_html.body.find('div', {'class': 'wrap'})
-        insult = insult_html.text.strip()
-        self.reply(message, insult)
