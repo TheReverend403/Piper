@@ -12,7 +12,6 @@ class KernelCommand(Command):
     description = 'Shows current Linux kernel versions.'
 
     def run(self, message, args):
-        response = None
         try:
             self.bot.telegram.send_chat_action(message.chat.id, 'typing')
             response = requests.get('https://www.kernel.org/releases.json')
@@ -20,9 +19,6 @@ class KernelCommand(Command):
             self.reply(message, 'Error: {0}'.format(ex.strerror))
             self._logger.exception(ex)
             return
-        finally:
-            if response is not None:
-                response.close()
 
         parsed = json.loads(response.text)
         versions = []

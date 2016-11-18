@@ -10,7 +10,6 @@ class InsultCommand(Command):
     description = 'Gets a random insult from http://www.insultgenerator.org'
 
     def run(self, message, args):
-        response = None
         try:
             self.bot.telegram.send_chat_action(message.chat.id, 'typing')
             response = requests.get('http://www.insultgenerator.org')
@@ -21,6 +20,3 @@ class InsultCommand(Command):
             doc = html.fromstring(response.text)
             insult = ''.join(doc.xpath('//div[@class="wrap"]/text()')).strip()
             self.reply(message, insult)
-        finally:
-            if response is not None:
-                response.close()

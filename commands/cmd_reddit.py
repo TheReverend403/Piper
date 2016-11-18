@@ -18,7 +18,6 @@ class RedditCommand(Command):
             self.reply(message, 'Please supply a username!')
             return
 
-        response = None
         try:
             headers = {'User-Agent': 'Pyper, by /u/TheReverend403 - https://github.com/TheReverend403/Pyper'}
             profile_url = 'http://www.reddit.com/user/{0}/about.json'.format(args[0])
@@ -28,9 +27,6 @@ class RedditCommand(Command):
             self.reply(message, 'Error: {0}'.format(ex.strerror))
             self._logger.exception(ex)
             return
-        finally:
-            if response is not None:
-                response.close()
 
         response_data = json.loads(response.text)
         try:
