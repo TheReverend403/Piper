@@ -4,7 +4,6 @@ chardet==3.0.4
 click==6.7
 decorator==4.1.2
 emoji==0.4.5
-google-api-python-client==1.6.3
 httplib2==0.10.3
 idna==2.6
 imdbpie==4.3.0
