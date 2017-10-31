@@ -74,12 +74,4 @@ class LastFMCommand(Command):
         reply = '<a href="http://www.last.fm/user/{0}">{1}</a> is now listening to {2}'.format(
             telegram_escape(username), telegram_escape(user.first_name), trackinfo)
 
-        currently_listening = current_track.get_listener_count() - 1
-        if currently_listening:
-            reply += ', and so {0} {1} other {2}.'.format(
-                'is' if currently_listening is 1 else 'are', currently_listening,
-                'user' if currently_listening is 1 else 'users')
-        else:
-            reply += ', and is the only user currently doing so.'
-
         self.reply(message, reply, parse_mode='HTML')

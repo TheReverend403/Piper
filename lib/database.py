@@ -32,9 +32,10 @@ class Database(object):
                 'first_name': user.first_name,
                 'last_name': user.last_name,
             }, where('id') == user.id)
-        if extra_params is not None:
+        if extra_params:
             for k in extra_params:
-                extra_params['_' + k] = extra_params.pop(k)
+                new_key = k if k.startswith('_') else '_' + k
+                extra_params[new_key] = extra_params.pop(k)
             table.update(extra_params, where('id') == user.id)
 
     def process_message(self, message):
